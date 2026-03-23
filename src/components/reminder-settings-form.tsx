@@ -17,8 +17,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 
-const textareaClass =
-  'w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30';
+const textareaBase =
+  'w-full rounded-md border border-input bg-card px-3 py-2.5 text-sm leading-relaxed shadow-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/35 disabled:cursor-not-allowed disabled:bg-muted/40 disabled:opacity-60';
+
+const textareaTall = `${textareaBase} min-h-[140px]`;
 
 type Props = {
   settings: ReminderSettings;
@@ -90,10 +92,18 @@ export function ReminderSettingsForm({ settings }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <fieldset disabled={isPending} className="space-y-8">
-        <div className="space-y-3 rounded-lg border bg-muted/30 px-4 py-3">
-          <h3 className="text-sm font-medium">Rok za zakašnjenje (dashboard)</h3>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <fieldset disabled={isPending} className="min-w-0">
+        <div className="overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
+          <div className="border-b border-border/80 bg-slate-50/60 px-5 py-4">
+            <h3 className="text-sm font-semibold text-foreground">
+              Rok za zakašnjenje (dashboard)
+            </h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Utječe na prikaz &quot;Zakašnjelo&quot; na dashboardu
+            </p>
+          </div>
+          <div className="space-y-3 px-5 py-4">
           <div className="flex flex-col gap-1.5 sm:max-w-xs">
             <Label htmlFor="overdue_threshold_day">
               Dan u sljedećem mjesecu
@@ -119,11 +129,16 @@ export function ReminderSettingsForm({ settings }: Props) {
               probleme s kratkim mjesecima.
             </p>
           </div>
+          </div>
         </div>
 
-        <div className="space-y-4">
-          <h3 className="text-sm font-medium">Predložak prvog podsjetnika</h3>
-
+        <div className="mt-6 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
+          <div className="border-b border-border/80 bg-slate-50/60 px-5 py-3">
+            <h3 className="text-sm font-semibold text-foreground">
+              Predložak prvog podsjetnika
+            </h3>
+          </div>
+          <div className="space-y-4 px-5 py-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="default_subject">Predmet</Label>
             <Input
@@ -142,19 +157,24 @@ export function ReminderSettingsForm({ settings }: Props) {
               value={defaultBody}
               onChange={(e) => setDefaultBody(e.target.value)}
               placeholder="Poštovani,&#10;&#10;za {{company_name}} još uvijek nedostaje sljedeća dokumentacija za {{month_name}} {{year}}:&#10;&#10;{{missing_documents_list}}&#10;&#10;Molimo dostavite navedenu dokumentaciju.&#10;&#10;{{firm_signature}}"
-              className={textareaClass}
+              className={textareaTall}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs leading-relaxed text-muted-foreground">
               Dostupne varijable: {'{{company_name}}'}, {'{{month_name}}'},{' '}
               {'{{year}}'}, {'{{missing_documents_list}}'},{' '}
               {'{{firm_signature}}'}
             </p>
           </div>
+          </div>
         </div>
 
-        <div className="space-y-4">
-          <h3 className="text-sm font-medium">Predložak follow-up podsjetnika</h3>
-
+        <div className="mt-6 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
+          <div className="border-b border-border/80 bg-slate-50/60 px-5 py-3">
+            <h3 className="text-sm font-semibold text-foreground">
+              Predložak follow-up podsjetnika
+            </h3>
+          </div>
+          <div className="space-y-4 px-5 py-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="follow_up_subject">Predmet</Label>
             <Input
@@ -173,13 +193,17 @@ export function ReminderSettingsForm({ settings }: Props) {
               value={followUpBody}
               onChange={(e) => setFollowUpBody(e.target.value)}
               placeholder="Poštovani,&#10;&#10;ovo je ponovljeni podsjetnik..."
-              className={textareaClass}
+              className={textareaTall}
             />
+          </div>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <h3 className="text-sm font-medium">Potpis</h3>
+        <div className="mt-6 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
+          <div className="border-b border-border/80 bg-slate-50/60 px-5 py-3">
+            <h3 className="text-sm font-semibold text-foreground">Potpis</h3>
+          </div>
+          <div className="space-y-4 px-5 py-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="signature">
               Potpis (koristi se kao {'{{firm_signature}}'})
@@ -190,34 +214,40 @@ export function ReminderSettingsForm({ settings }: Props) {
               value={signature}
               onChange={(e) => setSignature(e.target.value)}
               placeholder="S poštovanjem,&#10;Vaš računovodstveni ured"
-              className={textareaClass}
+              className={`${textareaBase} min-h-[5.5rem]`}
             />
+          </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="mt-6 flex items-center gap-3 rounded-lg border border-dashed border-border/90 bg-muted/20 px-4 py-3">
           <Checkbox
             id="auto_send"
             checked={autoSend}
             onCheckedChange={(checked) => setAutoSend(checked === true)}
             disabled
           />
-          <Label htmlFor="auto_send" className="cursor-default text-muted-foreground">
+          <Label
+            htmlFor="auto_send"
+            className="cursor-default text-sm text-muted-foreground"
+          >
             Automatsko slanje podsjetnika (dolazi uskoro)
           </Label>
         </div>
       </fieldset>
 
       {error && (
-        <p role="alert" className="text-sm text-destructive">{error}</p>
+        <p role="alert" className="text-sm font-medium text-destructive">
+          {error}
+        </p>
       )}
       {success && (
-        <p role="status" className="text-sm text-emerald-600">
+        <p role="status" className="text-sm font-medium text-emerald-800">
           Postavke su uspješno spremljene.
         </p>
       )}
 
-      <Button type="submit" disabled={isPending}>
+      <Button type="submit" disabled={isPending} className="min-w-[10rem]">
         {isPending ? 'Spremanje...' : 'Spremi postavke'}
       </Button>
     </form>

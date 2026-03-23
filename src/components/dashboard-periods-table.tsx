@@ -174,9 +174,9 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
     search !== '' || typeFilter !== ALL_TYPES || statusFilter !== ALL_STATUS;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+    <div className="space-y-5">
+      <div className="flex flex-col gap-4 rounded-xl border border-border/90 bg-card p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
           <Input
             placeholder="Pretraži po nazivu ili OIB-u..."
             aria-label="Pretraži klijente na dashboardu"
@@ -233,13 +233,16 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
         </p>
       ) : null}
       {feedback ? (
-        <p className="text-sm text-muted-foreground" role="status">
+        <p
+          className="rounded-lg border border-border/80 bg-slate-50/80 px-3 py-2.5 text-sm text-foreground/90"
+          role="status"
+        >
           {feedback}
         </p>
       ) : null}
 
       {filtered.length === 0 ? (
-        <div className="rounded-lg border border-dashed py-12 text-center">
+        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-14 text-center shadow-sm">
           {periods.length === 0 ? (
             <p className="text-muted-foreground">Nema otvorenih mjeseci.</p>
           ) : (
@@ -266,10 +269,10 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
         </div>
       ) : (
         <>
-          <div className="rounded-lg border">
+          <div className="overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead className="w-12">
                     <Checkbox
                       aria-label="Odaberi sve vidljive retke"
@@ -288,7 +291,9 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
                   <TableHead>Klijent</TableHead>
                   <TableHead>OIB</TableHead>
                   <TableHead>Tip</TableHead>
-                  <TableHead className="text-center">Nedostaje</TableHead>
+                  <TableHead className="text-center tabular-nums">
+                    Nedostaje
+                  </TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Zadnji podsjetnik</TableHead>
                   <TableHead className="w-20" />
@@ -309,7 +314,7 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
                     <TableCell className="font-medium">
                       <Link
                         href={`/clients/${period.client_id}`}
-                        className="hover:underline"
+                        className="text-primary hover:underline"
                       >
                         {period.company_name}
                       </Link>
@@ -322,7 +327,7 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
                     </TableCell>
                     <TableCell className="text-center tabular-nums">
                       {period.missingCount > 0 ? (
-                        <span className="font-medium text-destructive">
+                        <span className="font-semibold text-red-700">
                           {period.missingCount}/{period.totalDocs}
                         </span>
                       ) : (
@@ -333,14 +338,14 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
                     </TableCell>
                     <TableCell>
                       {period.status === 'ready' ? (
-                        <Badge variant="secondary">Spremno</Badge>
+                        <Badge variant="success">Spremno</Badge>
                       ) : overdue ? (
                         <Badge variant="destructive">Zakašnjelo</Badge>
                       ) : (
-                        <Badge variant="outline">Nepotpuno</Badge>
+                        <Badge variant="warning">Nepotpuno</Badge>
                       )}
                     </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
+                    <TableCell className="tabular-nums text-xs text-muted-foreground">
                       {period.last_reminder_sent_at
                         ? new Date(
                             period.last_reminder_sent_at,

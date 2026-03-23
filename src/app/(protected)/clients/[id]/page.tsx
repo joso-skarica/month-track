@@ -67,25 +67,28 @@ export default async function ClientDetailPage({
     client.client_type;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
             {client.company_name}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            OIB: {client.oib}
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            OIB:{' '}
+            <span className="font-mono tabular-nums text-foreground/90">
+              {client.oib}
+            </span>
           </p>
         </div>
-        <div className="flex gap-3">
-          <Button asChild variant="outline">
+        <div className="flex shrink-0 flex-wrap gap-2">
+          <Button asChild variant="outline" size="sm">
             <Link href={`/clients/${client.id}/edit`}>Uredi klijenta</Link>
           </Button>
           <OpenMonthButton clientId={client.id} />
         </div>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
         <Card>
           <CardHeader>
             <CardTitle>Podaci o klijentu</CardTitle>
@@ -113,9 +116,9 @@ export default async function ClientDetailPage({
                 <dt className="text-muted-foreground">Status</dt>
                 <dd>
                   {client.is_active ? (
-                    <Badge variant="secondary">Aktivan</Badge>
+                    <Badge variant="success">Aktivan</Badge>
                   ) : (
-                    <Badge variant="outline">Neaktivan</Badge>
+                    <Badge variant="secondary">Neaktivan</Badge>
                   )}
                 </dd>
               </div>
@@ -140,7 +143,7 @@ export default async function ClientDetailPage({
                   return (
                     <li
                       key={req.id}
-                      className="flex items-center gap-2 before:block before:size-1.5 before:rounded-full before:bg-primary"
+                      className="flex items-center gap-2.5 text-foreground/90 before:block before:size-1.5 before:shrink-0 before:rounded-full before:bg-blue-600"
                     >
                       {label}
                     </li>
@@ -163,16 +166,18 @@ export default async function ClientDetailPage({
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="overflow-hidden shadow-sm">
+        <CardHeader className="border-b border-border/80 bg-slate-50/50 pb-4">
           <CardTitle>Mjeseci</CardTitle>
           <CardDescription>
             Povijest otvorenih mjeseci i brzo otvaranje određenog razdoblja
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-8">
-          <div className="space-y-3">
-            <p className="text-sm font-medium">Otvori mjesec po datumu</p>
+        <CardContent className="space-y-0 p-0">
+          <div className="border-b border-border/80 bg-slate-50/30 px-6 py-5">
+            <p className="mb-3 text-sm font-semibold text-foreground">
+              Otvori mjesec po datumu
+            </p>
             <ClientOpenMonthPicker
               clientId={client.id}
               defaultYear={currentYear}
@@ -180,20 +185,22 @@ export default async function ClientDetailPage({
             />
           </div>
 
-          <div className="space-y-3">
-            <p className="text-sm font-medium">Povijest mjeseci</p>
+          <div className="px-6 py-5">
+            <p className="mb-3 text-sm font-semibold text-foreground">
+              Povijest mjeseci
+            </p>
             {periods.length === 0 ? (
-              <div className="rounded-lg border border-dashed py-10 text-center">
+              <div className="rounded-xl border border-dashed border-border/90 bg-card py-10 text-center">
                 <p className="text-sm text-muted-foreground">
                   Još nema otvorenih mjeseci za ovog klijenta.
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="mt-1.5 text-sm text-muted-foreground">
                   Koristite &quot;Otvori tekući mjesec&quot; ili odaberite godinu i
                   mjesec iznad.
                 </p>
               </div>
             ) : (
-              <div className="rounded-lg border">
+              <div className="overflow-hidden rounded-xl border border-border/90 shadow-sm">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -211,12 +218,12 @@ export default async function ClientDetailPage({
                         </TableCell>
                         <TableCell>
                           {p.status === 'ready' ? (
-                            <Badge variant="secondary">Spremno</Badge>
+                            <Badge variant="success">Spremno</Badge>
                           ) : (
-                            <Badge variant="outline">Nepotpuno</Badge>
+                            <Badge variant="warning">Nepotpuno</Badge>
                           )}
                         </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
+                        <TableCell className="tabular-nums text-sm text-muted-foreground">
                           {p.last_reminder_sent_at
                             ? new Date(
                                 p.last_reminder_sent_at,

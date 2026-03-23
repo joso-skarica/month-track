@@ -29,9 +29,12 @@ import {
 } from '@/components/ui/table';
 
 const STATUS_TRIGGER_CLASS: Record<DocumentStatus, string> = {
-  missing: 'text-destructive',
-  received: 'text-muted-foreground',
-  reviewed: 'text-foreground',
+  missing:
+    'border-red-200 bg-red-50/50 font-medium text-red-900 focus-visible:ring-red-200/40',
+  received:
+    'border-amber-200 bg-amber-50/60 font-medium text-amber-950 focus-visible:ring-amber-200/40',
+  reviewed:
+    'border-blue-200 bg-blue-50/60 font-medium text-blue-950 focus-visible:ring-blue-200/40',
 };
 
 type DocStatusRow = {
@@ -173,30 +176,41 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
   }
 
   return (
-    <div className="space-y-6">
-      {/* Document checklist table */}
+    <div className="space-y-8">
       {sorted.length === 0 ? (
-        <div className="rounded-lg border border-dashed py-12 text-center">
-          <p className="text-muted-foreground">
+        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-14 text-center shadow-sm">
+          <p className="text-sm font-medium text-foreground/80">
             Nema definiranih dokumenata za ovaj mjesec.
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
             Dodajte zahtjeve za dokumentima u postavkama klijenta.
           </p>
-          <Button asChild variant="outline" className="mt-4">
+          <Button asChild variant="outline" className="mt-6">
             <a href={`/clients/${clientId}/edit`}>Uredi zahtjeve klijenta</a>
           </Button>
         </div>
       ) : (
         <>
-          <div className="rounded-lg border">
-            <Table>
+          <div>
+            <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+              <h2 className="text-lg font-semibold tracking-tight text-foreground">
+                Kontrolna lista dokumenata
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                {sorted.length}{' '}
+                {sorted.length === 1 ? 'stavka' : 'stavki'}
+              </p>
+            </div>
+            <div className="overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
+              <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Dokument</TableHead>
-                  <TableHead className="w-44">Status</TableHead>
+                  <TableHead className="w-48">Status</TableHead>
                   <TableHead>Bilješke</TableHead>
-                  <TableHead className="w-40">Zadnje ažuriranje</TableHead>
+                  <TableHead className="w-44 tabular-nums">
+                    Zadnje ažuriranje
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -214,7 +228,10 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
                         disabled={isPending}
                       >
                         <SelectTrigger
-                          className={cn('w-40', STATUS_TRIGGER_CLASS[row.status])}
+                          className={cn(
+                            'w-full min-w-[10.5rem] max-w-[11rem] shadow-sm',
+                            STATUS_TRIGGER_CLASS[row.status],
+                          )}
                         >
                           <SelectValue />
                         </SelectTrigger>
@@ -246,106 +263,123 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
                         disabled={isPending}
                       />
                     </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
+                    <TableCell className="tabular-nums text-xs text-muted-foreground">
                       {formatDate(row.updated_at)}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            </div>
           </div>
 
-          {/* Summary + feedback */}
-          <div className="space-y-3">
+          <div className="space-y-4">
             {hasMissing && (
-              <p className="text-sm text-muted-foreground">
-                {missingCount} od {sorted.length} dokumenata još nedostaje.
+              <p className="text-sm text-amber-900/90">
+                <span className="font-semibold tabular-nums">{missingCount}</span>{' '}
+                od {sorted.length} dokumenata još nedostaje.
               </p>
             )}
 
             {error && (
-              <p role="alert" className="text-sm text-destructive">{error}</p>
+              <p role="alert" className="text-sm font-medium text-destructive">
+                {error}
+              </p>
             )}
             {successMsg && (
-              <p role="status" className="text-sm text-emerald-600">{successMsg}</p>
+              <p role="status" className="text-sm font-medium text-emerald-800">
+                {successMsg}
+              </p>
             )}
           </div>
 
-          {/* Actions */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
-            <div className="flex flex-col gap-1">
-              <Button
-                onClick={handleMarkReady}
-                disabled={isPending || hasMissing || isReady}
-              >
-                {isPending && !hasMissing && !isReady
-                  ? 'Označavanje...'
-                  : isReady
-                    ? 'Već označeno kao spremno'
-                    : 'Označi kao spremno'}
-              </Button>
-              {hasMissing && !isReady && (
-                <p className="text-xs text-muted-foreground">
-                  Dostupno kada svi dokumenti budu zaprimljeni ili pregledani.
-                </p>
-              )}
-            </div>
+          <div className="rounded-xl border border-border/90 bg-slate-50/50 p-4 shadow-sm sm:p-5">
+            <p className="mb-3 text-xs font-medium text-muted-foreground">
+              Radnje za ovaj mjesec
+            </p>
+            <div className="flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-start sm:gap-8">
+              <div className="flex min-w-[12rem] max-w-sm flex-col gap-1.5">
+                <Button
+                  onClick={handleMarkReady}
+                  disabled={isPending || hasMissing || isReady}
+                >
+                  {isPending && !hasMissing && !isReady
+                    ? 'Označavanje...'
+                    : isReady
+                      ? 'Već označeno kao spremno'
+                      : 'Označi kao spremno'}
+                </Button>
+                {hasMissing && !isReady && (
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    Dostupno kada svi dokumenti budu zaprimljeni ili pregledani.
+                  </p>
+                )}
+              </div>
 
-            <div className="flex flex-col gap-1">
-              <Button
-                variant="outline"
-                onClick={handleSendReminder}
-                disabled={isPending || !hasMissing}
-              >
-                {isPending && hasMissing
-                  ? 'Slanje...'
-                  : 'Pošalji podsjetnik'}
-              </Button>
-              {!hasMissing && (
-                <p className="text-xs text-muted-foreground">
-                  Nema dokumenata koji nedostaju — podsjetnik nije potreban.
-                </p>
-              )}
+              <div className="flex min-w-[12rem] max-w-sm flex-col gap-1.5">
+                <Button
+                  variant="outline"
+                  onClick={handleSendReminder}
+                  disabled={isPending || !hasMissing}
+                >
+                  {isPending && hasMissing
+                    ? 'Slanje...'
+                    : 'Pošalji podsjetnik'}
+                </Button>
+                {!hasMissing && (
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    Nema dokumenata koji nedostaju — podsjetnik nije potreban.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </>
       )}
 
-      {/* Reminder history */}
-      <div className="space-y-3">
-        <h3 className="text-sm font-medium">Povijest podsjetnika</h3>
-        {reminders.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            Za ovaj mjesec još nisu poslani podsjetnici.
+      <div className="overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
+        <div className="border-b border-border/80 bg-slate-50/60 px-4 py-3 sm:px-5">
+          <h3 className="text-sm font-semibold text-foreground">
+            Povijest podsjetnika
+          </h3>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Zapis poslanih e-poruka za ovaj mjesec
           </p>
-        ) : (
-          <div className="rounded-lg border">
+        </div>
+        <div className="p-0">
+          {reminders.length === 0 ? (
+            <p className="px-4 py-8 text-center text-sm text-muted-foreground sm:px-5">
+              Za ovaj mjesec još nisu poslani podsjetnici.
+            </p>
+          ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Primatelj</TableHead>
                   <TableHead>Vrsta</TableHead>
-                  <TableHead>Poslano</TableHead>
+                  <TableHead className="tabular-nums">Poslano</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {reminders.map((r) => (
                   <TableRow key={r.id}>
-                    <TableCell className="text-sm">{r.recipient_email}</TableCell>
+                    <TableCell className="max-w-[14rem] truncate text-sm">
+                      {r.recipient_email}
+                    </TableCell>
                     <TableCell>
-                      <Badge variant="outline">
+                      <Badge variant="info">
                         {REMINDER_TYPE_LABELS[r.reminder_type] ?? r.reminder_type}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
+                    <TableCell className="tabular-nums text-xs text-muted-foreground">
                       {formatDate(r.sent_at)}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

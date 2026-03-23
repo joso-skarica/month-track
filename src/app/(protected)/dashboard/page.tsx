@@ -1,5 +1,12 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import {
+  AlertTriangle,
+  CheckCircle2,
+  ClipboardList,
+  Mail,
+  Users,
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import {
   getCurrentPeriod,
@@ -7,6 +14,7 @@ import {
   isOverdue,
   normalizeOverdueThresholdDay,
 } from '@/lib/utils/months';
+import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { DashboardPeriodsTable } from '@/components/dashboard-periods-table';
@@ -106,49 +114,106 @@ export default async function DashboardPage() {
     : 0;
 
   const stats = [
-    { label: 'Aktivnih klijenata', value: activeClientsCount },
-    { label: 'Nepotpuno', value: incompleteCount },
-    { label: 'Spremno', value: readyCount },
-    { label: 'Zakašnjelo', value: overdueCount },
-    { label: 'Podsjetnika', value: remindersCount },
-  ];
+    {
+      label: 'Aktivnih klijenata',
+      value: activeClientsCount,
+      icon: Users,
+      iconClass: 'text-slate-500',
+      valueClass: 'text-foreground',
+    },
+    {
+      label: 'Nepotpuno',
+      value: incompleteCount,
+      icon: ClipboardList,
+      iconClass: 'text-amber-600',
+      valueClass:
+        incompleteCount > 0 ? 'text-amber-900' : 'text-muted-foreground',
+    },
+    {
+      label: 'Spremno',
+      value: readyCount,
+      icon: CheckCircle2,
+      iconClass: 'text-emerald-600',
+      valueClass: readyCount > 0 ? 'text-emerald-900' : 'text-muted-foreground',
+    },
+    {
+      label: 'Zakašnjelo',
+      value: overdueCount,
+      icon: AlertTriangle,
+      iconClass: 'text-red-600',
+      valueClass:
+        overdueCount > 0 ? 'text-red-800' : 'text-muted-foreground',
+    },
+    {
+      label: 'Podsjetnika',
+      value: remindersCount,
+      icon: Mail,
+      iconClass: 'text-blue-600',
+      valueClass: 'text-foreground',
+    },
+  ] as const;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Pregled za {monthLabel}
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+          Dashboard
+        </h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          Pregled za{' '}
+          <span className="font-medium text-foreground/90">{monthLabel}</span>
+          {overdue ? (
+            <span className="text-red-700">
+              {' '}
+              · rok za nepotpune mjesece je prošao
+            </span>
+          ) : null}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {stats.map((stat) => (
-          <Card key={stat.label} size="sm">
-            <CardHeader>
-              <CardTitle className="text-xs font-medium text-muted-foreground">
-                {stat.label}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-semibold tabular-nums">{stat.value}</p>
-            </CardContent>
-          </Card>
-        ))}
+        {stats.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <Card key={stat.label} size="sm" className="shadow-sm">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+                <CardTitle className="text-xs font-medium leading-tight text-muted-foreground">
+                  {stat.label}
+                </CardTitle>
+                <Icon
+                  className={cn('size-4 shrink-0 opacity-90', stat.iconClass)}
+                  aria-hidden
+                />
+              </CardHeader>
+              <CardContent className="pt-0">
+                <p
+                  className={cn(
+                    'text-2xl font-semibold tabular-nums tracking-tight',
+                    stat.valueClass,
+                  )}
+                >
+                  {stat.value}
+                </p>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-lg font-medium">Klijenti — {monthLabel}</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">
+          Klijenti — {monthLabel}
+        </h2>
 
         {periods.length === 0 ? (
-          <div className="rounded-lg border border-dashed py-12 text-center">
-            <p className="text-muted-foreground">
+          <div className="rounded-xl border border-dashed border-border/90 bg-card/80 py-14 text-center shadow-sm">
+            <p className="text-sm font-medium text-foreground/80">
               Nema otvorenih mjeseci za {monthLabel}.
             </p>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
               Otvorite tekući mjesec za pojedinog klijenta na stranici klijenta.
             </p>
-            <Button asChild variant="outline" className="mt-4">
+            <Button asChild variant="outline" className="mt-6">
               <Link href="/clients">Pregledaj klijente</Link>
             </Button>
           </div>

@@ -24,13 +24,14 @@ export default async function ReminderSettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
           Postavke podsjetnika
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Konfigurirajte predloške i postavke za email podsjetnike.
+        <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          Predlošci e-pošte, potpis i prag zakašnjenja na dashboardu. Promjene
+          vrijede za sve buduće podsjetnike.
         </p>
       </div>
       <ReminderSettingsForm settings={settings} />

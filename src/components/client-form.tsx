@@ -122,9 +122,13 @@ export function ClientForm({ documentTypes, initialData }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form
+      onSubmit={handleSubmit}
+      className="overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm"
+    >
+      <div className="space-y-8 p-6 sm:p-8">
       <fieldset disabled={isPending} className="space-y-8">
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="company_name">Naziv tvrtke *</Label>
             <Input
@@ -230,7 +234,7 @@ export function ClientForm({ documentTypes, initialData }: Props) {
             {documentTypes.map((dt) => (
               <label
                 key={dt.id}
-                className="flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors hover:bg-muted"
+                className="flex cursor-pointer items-center gap-2 rounded-md border border-border/90 bg-card px-3 py-2.5 text-sm transition-colors hover:bg-slate-50/90"
               >
                 <Checkbox
                   checked={selectedDocIds.includes(dt.id)}
@@ -249,12 +253,12 @@ export function ClientForm({ documentTypes, initialData }: Props) {
       </fieldset>
 
       {error && (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-sm font-medium text-destructive">
           {error}
         </p>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3 border-t border-border/80 pt-6">
         <Button type="submit" disabled={isPending}>
           {isPending
             ? 'Spremanje...'
@@ -270,6 +274,7 @@ export function ClientForm({ documentTypes, initialData }: Props) {
         >
           Odustani
         </Button>
+      </div>
       </div>
     </form>
   );

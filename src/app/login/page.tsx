@@ -57,12 +57,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted px-4">
-      <div className="w-full max-w-sm rounded-lg border bg-card p-6 shadow-sm">
-        <h1 className="mb-1 text-xl font-semibold tracking-tight">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+      <div className="w-full max-w-sm rounded-xl border border-border/90 bg-card p-8 shadow-sm">
+        <h1 className="mb-1 text-xl font-semibold tracking-tight text-foreground">
           Month-Track
         </h1>
-        <p className="mb-6 text-sm text-muted-foreground">
+        <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
           {mode === 'signin'
             ? 'Prijavite se u svoj račun'
             : 'Napravite novi račun'}
@@ -134,7 +134,7 @@ export default function LoginPage() {
                   setError(null);
                   setMessage(null);
                 }}
-                className="font-medium text-foreground underline-offset-4 hover:underline"
+                className="font-medium text-primary underline-offset-4 hover:underline"
               >
                 Registrirajte se
               </button>
@@ -149,7 +149,7 @@ export default function LoginPage() {
                   setError(null);
                   setMessage(null);
                 }}
-                className="font-medium text-foreground underline-offset-4 hover:underline"
+                className="font-medium text-primary underline-offset-4 hover:underline"
               >
                 Prijavite se
               </button>

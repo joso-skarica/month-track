@@ -50,33 +50,52 @@ export default async function MonthPage({
   const monthLabel = formatCroatianMonth(period.month, period.year);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              {monthLabel}
-            </h1>
-            {period.status === 'ready' ? (
-              <Badge variant="secondary">Spremno</Badge>
-            ) : (
-              <Badge variant="outline">Nepotpuno</Badge>
-            )}
+    <div className="space-y-8">
+      <div className="rounded-xl border border-border/90 bg-card p-5 shadow-sm sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+                {monthLabel}
+              </h1>
+              {period.status === 'ready' ? (
+                <Badge variant="success">Spremno</Badge>
+              ) : (
+                <Badge variant="warning">Nepotpuno</Badge>
+              )}
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              <span className="font-medium text-foreground/90">
+                {client.company_name}
+              </span>
+              <span className="text-border"> · </span>
+              OIB:{' '}
+              <span className="font-mono tabular-nums text-foreground/85">
+                {client.oib}
+              </span>
+            </p>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {client.company_name} &middot; OIB: {client.oib}
-          </p>
+          <div className="flex shrink-0 flex-wrap gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link
+                href={`/clients/${clientId}/months/${monthId}/summary`}
+              >
+                Ispis / sažetak mjeseca
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/clients/${clientId}`}>Natrag na klijenta</Link>
+            </Button>
+          </div>
         </div>
-        <Button asChild variant="outline">
-          <Link href={`/clients/${clientId}`}>Natrag na klijenta</Link>
-        </Button>
+        <div className="mt-5 border-t border-border/80 pt-4">
+          <MonthPeriodNavigation
+            clientId={clientId}
+            year={period.year}
+            month={period.month}
+          />
+        </div>
       </div>
-
-      <MonthPeriodNavigation
-        clientId={clientId}
-        year={period.year}
-        month={period.month}
-      />
 
       <MonthChecklist
         monthlyPeriod={period}

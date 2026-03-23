@@ -45,8 +45,8 @@ export function ClientsTable({ clients }: { clients: Client[] }) {
   const hasFilters = search !== '' || typeFilter !== ALL_TYPES;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-5">
+      <div className="flex flex-col gap-4 rounded-xl border border-border/90 bg-card p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 gap-3">
           <Input
             placeholder="Pretraži po nazivu ili OIB-u..."
@@ -75,7 +75,7 @@ export function ClientsTable({ clients }: { clients: Client[] }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-lg border border-dashed py-12 text-center">
+        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-14 text-center shadow-sm">
           {clients.length === 0 ? (
             <>
               <p className="text-muted-foreground">
@@ -110,10 +110,10 @@ export function ClientsTable({ clients }: { clients: Client[] }) {
         </div>
       ) : (
         <>
-          <div className="rounded-lg border">
+          <div className="overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Naziv tvrtke</TableHead>
                   <TableHead>OIB</TableHead>
                   <TableHead>Tip</TableHead>
@@ -141,9 +141,9 @@ export function ClientsTable({ clients }: { clients: Client[] }) {
                     <TableCell className="text-sm">{client.email}</TableCell>
                     <TableCell>
                       {client.is_active ? (
-                        <Badge variant="secondary">Aktivan</Badge>
+                        <Badge variant="success">Aktivan</Badge>
                       ) : (
-                        <Badge variant="outline">Neaktivan</Badge>
+                        <Badge variant="secondary">Neaktivan</Badge>
                       )}
                     </TableCell>
                   </TableRow>
