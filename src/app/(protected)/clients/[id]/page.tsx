@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { getCurrentPeriod, formatCroatianMonth } from '@/lib/utils/months';
 import { CLIENT_TYPES } from '@/lib/constants/client-presets';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { OpenMonthButton } from '@/components/open-month-button';
+import { ClientOpenMonthPicker } from '@/components/client-open-month-picker';
 import {
   Card,
   CardContent,
@@ -12,7 +14,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import type { Client } from '@/types/db';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import type { Client, MonthlyPeriod } from '@/types/db';
 
 export default async function ClientDetailPage({
   params,
@@ -37,6 +47,20 @@ export default async function ClientDetailPage({
     .select('id, document_type_id, document_types(label_hr)')
     .eq('client_id', id)
     .eq('is_required', true);
+
+  const { data: monthPeriods } = await supabase
+    .from('monthly_periods')
+    .select('id, year, month, status, last_reminder_sent_at')
+    .eq('client_id', id)
+    .order('year', { ascending: false })
+    .order('month', { ascending: false });
+
+  const periods = (monthPeriods ?? []) as Pick<
+    MonthlyPeriod,
+    'id' | 'year' | 'month' | 'status' | 'last_reminder_sent_at'
+  >[];
+
+  const { year: currentYear, month: currentMonth } = getCurrentPeriod();
 
   const typeLabel =
     CLIENT_TYPES.find((ct) => ct.value === client.client_type)?.labelHr ??
@@ -138,6 +162,87 @@ export default async function ClientDetailPage({
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Mjeseci</CardTitle>
+          <CardDescription>
+            Povijest otvorenih mjeseci i brzo otvaranje određenog razdoblja
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-8">
+          <div className="space-y-3">
+            <p className="text-sm font-medium">Otvori mjesec po datumu</p>
+            <ClientOpenMonthPicker
+              clientId={client.id}
+              defaultYear={currentYear}
+              defaultMonth={currentMonth}
+            />
+          </div>
+
+          <div className="space-y-3">
+            <p className="text-sm font-medium">Povijest mjeseci</p>
+            {periods.length === 0 ? (
+              <div className="rounded-lg border border-dashed py-10 text-center">
+                <p className="text-sm text-muted-foreground">
+                  Još nema otvorenih mjeseci za ovog klijenta.
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Koristite &quot;Otvori tekući mjesec&quot; ili odaberite godinu i
+                  mjesec iznad.
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-lg border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Razdoblje</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Zadnji podsjetnik</TableHead>
+                      <TableHead className="w-28 text-right">Akcija</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {periods.map((p) => (
+                      <TableRow key={p.id}>
+                        <TableCell className="font-medium">
+                          {formatCroatianMonth(p.month, p.year)}
+                        </TableCell>
+                        <TableCell>
+                          {p.status === 'ready' ? (
+                            <Badge variant="secondary">Spremno</Badge>
+                          ) : (
+                            <Badge variant="outline">Nepotpuno</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {p.last_reminder_sent_at
+                            ? new Date(
+                                p.last_reminder_sent_at,
+                              ).toLocaleDateString('hr-HR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                              })
+                            : '—'}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button asChild variant="outline" size="sm">
+                            <Link href={`/clients/${client.id}/months/${p.id}`}>
+                              Otvori
+                            </Link>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

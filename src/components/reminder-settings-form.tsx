@@ -5,6 +5,12 @@ import {
   updateReminderSettings,
   type ReminderSettingsFormData,
 } from '@/app/(protected)/settings/reminders/actions';
+import {
+  DEFAULT_OVERDUE_THRESHOLD_DAY,
+  OVERDUE_THRESHOLD_DAY_MAX,
+  OVERDUE_THRESHOLD_DAY_MIN,
+  normalizeOverdueThresholdDay,
+} from '@/lib/utils/months';
 import type { ReminderSettings } from '@/types/db';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,11 +43,31 @@ export function ReminderSettingsForm({ settings }: Props) {
   );
   const [signature, setSignature] = useState(settings.signature ?? '');
   const [autoSend, setAutoSend] = useState(settings.auto_send_enabled);
+  const [overdueDayStr, setOverdueDayStr] = useState(() =>
+    String(
+      normalizeOverdueThresholdDay(
+        settings.overdue_threshold_day ?? DEFAULT_OVERDUE_THRESHOLD_DAY,
+      ),
+    ),
+  );
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setSuccess(false);
+
+    const overdueParsed = Number.parseInt(overdueDayStr.trim(), 10);
+    if (
+      Number.isNaN(overdueParsed) ||
+      !Number.isInteger(overdueParsed) ||
+      overdueParsed < OVERDUE_THRESHOLD_DAY_MIN ||
+      overdueParsed > OVERDUE_THRESHOLD_DAY_MAX
+    ) {
+      setError(
+        `Dan u mjesecu mora biti cijeli broj od ${OVERDUE_THRESHOLD_DAY_MIN} do ${OVERDUE_THRESHOLD_DAY_MAX}.`,
+      );
+      return;
+    }
 
     const data: ReminderSettingsFormData = {
       default_subject: defaultSubject.trim(),
@@ -50,6 +76,7 @@ export function ReminderSettingsForm({ settings }: Props) {
       follow_up_body: followUpBody.trim(),
       signature: signature.trim(),
       auto_send_enabled: autoSend,
+      overdue_threshold_day: overdueParsed,
     };
 
     startTransition(async () => {
@@ -65,6 +92,35 @@ export function ReminderSettingsForm({ settings }: Props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <fieldset disabled={isPending} className="space-y-8">
+        <div className="space-y-3 rounded-lg border bg-muted/30 px-4 py-3">
+          <h3 className="text-sm font-medium">Rok za zakašnjenje (dashboard)</h3>
+          <div className="flex flex-col gap-1.5 sm:max-w-xs">
+            <Label htmlFor="overdue_threshold_day">
+              Dan u sljedećem mjesecu
+            </Label>
+            <Input
+              id="overdue_threshold_day"
+              type="number"
+              inputMode="numeric"
+              min={OVERDUE_THRESHOLD_DAY_MIN}
+              max={OVERDUE_THRESHOLD_DAY_MAX}
+              value={overdueDayStr}
+              onChange={(e) => setOverdueDayStr(e.target.value)}
+              aria-describedby="overdue_threshold_day_help"
+            />
+            <p
+              id="overdue_threshold_day_help"
+              className="text-xs text-muted-foreground leading-snug"
+            >
+              Nepotpuni tekući mjesec na dashboardu označit će se kao zakašnjelo
+              nakon kraja ovog dana u sljedećem kalendarskom mjesecu (npr.{' '}
+              {OVERDUE_THRESHOLD_DAY_MIN}–{OVERDUE_THRESHOLD_DAY_MAX}: veljača za
+              siječanj). Koristi se samo za prikaz; ograničenje do 28. izbjegava
+              probleme s kratkim mjesecima.
+            </p>
+          </div>
+        </div>
+
         <div className="space-y-4">
           <h3 className="text-sm font-medium">Predložak prvog podsjetnika</h3>
 

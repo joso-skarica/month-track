@@ -1,34 +1,40 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { getCurrentPeriod, formatCroatianMonth, isOverdue } from '@/lib/utils/months';
-import { CLIENT_TYPES } from '@/lib/constants/client-presets';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-
-function getClientTypeLabel(value: string): string {
-  return CLIENT_TYPES.find((ct) => ct.value === value)?.labelHr ?? value;
-}
+  getCurrentPeriod,
+  formatCroatianMonth,
+  isOverdue,
+  normalizeOverdueThresholdDay,
+} from '@/lib/utils/months';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { DashboardPeriodsTable } from '@/components/dashboard-periods-table';
 
 export default async function DashboardPage() {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login');
+  }
+
   const { year, month } = getCurrentPeriod();
   const monthLabel = formatCroatianMonth(month, year);
-  const overdue = isOverdue(year, month);
 
   const [
+    settingsResult,
     activeClientsResult,
     periodsResult,
     remindersResult,
   ] = await Promise.all([
+    supabase
+      .from('reminder_settings')
+      .select('overdue_threshold_day')
+      .eq('owner_user_id', user.id)
+      .maybeSingle(),
     supabase
       .from('clients')
       .select('id', { count: 'exact', head: true })
@@ -57,6 +63,11 @@ export default async function DashboardPage() {
       ),
   ]);
 
+  const overdueThresholdDay = normalizeOverdueThresholdDay(
+    settingsResult.data?.overdue_threshold_day,
+  );
+  const overdue = isOverdue(year, month, overdueThresholdDay);
+
   const activeClientsCount = activeClientsResult.count ?? 0;
   const remindersCount = remindersResult.count ?? 0;
   type PeriodRow = {
@@ -74,6 +85,19 @@ export default async function DashboardPage() {
   };
 
   const periods = (periodsResult.data ?? []) as unknown as PeriodRow[];
+
+  const tableRows = periods.map((p) => ({
+    id: p.id,
+    client_id: p.client_id,
+    status: p.status,
+    company_name: p.clients.company_name,
+    oib: p.clients.oib,
+    client_type: p.clients.client_type,
+    last_reminder_sent_at: p.last_reminder_sent_at,
+    missingCount: p.monthly_document_statuses.filter((d) => d.status === 'missing')
+      .length,
+    totalDocs: p.monthly_document_statuses.length,
+  }));
 
   const incompleteCount = periods.filter((p) => p.status === 'incomplete').length;
   const readyCount = periods.filter((p) => p.status === 'ready').length;
@@ -129,88 +153,7 @@ export default async function DashboardPage() {
             </Button>
           </div>
         ) : (
-          <div className="rounded-lg border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Klijent</TableHead>
-                  <TableHead>OIB</TableHead>
-                  <TableHead>Tip</TableHead>
-                  <TableHead className="text-center">Nedostaje</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Zadnji podsjetnik</TableHead>
-                  <TableHead className="w-20" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {periods.map((period) => {
-                  const missingCount =
-                    period.monthly_document_statuses.filter(
-                      (d) => d.status === 'missing',
-                    ).length;
-                  const totalDocs = period.monthly_document_statuses.length;
-
-                  return (
-                    <TableRow key={period.id}>
-                      <TableCell className="font-medium">
-                        <Link
-                          href={`/clients/${period.client_id}`}
-                          className="hover:underline"
-                        >
-                          {period.clients.company_name}
-                        </Link>
-                      </TableCell>
-                      <TableCell className="font-mono text-xs">
-                        {period.clients.oib}
-                      </TableCell>
-                      <TableCell>
-                        {getClientTypeLabel(period.clients.client_type)}
-                      </TableCell>
-                      <TableCell className="text-center tabular-nums">
-                        {missingCount > 0 ? (
-                          <span className="font-medium text-destructive">
-                            {missingCount}/{totalDocs}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground">
-                            0/{totalDocs}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {period.status === 'ready' ? (
-                          <Badge variant="secondary">Spremno</Badge>
-                        ) : overdue ? (
-                          <Badge variant="destructive">Zakašnjelo</Badge>
-                        ) : (
-                          <Badge variant="outline">Nepotpuno</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
-                        {period.last_reminder_sent_at
-                          ? new Date(
-                              period.last_reminder_sent_at,
-                            ).toLocaleDateString('hr-HR', {
-                              day: '2-digit',
-                              month: '2-digit',
-                              year: 'numeric',
-                            })
-                          : '—'}
-                      </TableCell>
-                      <TableCell>
-                        <Link
-                          href={`/clients/${period.client_id}/months/${period.id}`}
-                          className="text-sm font-medium text-primary hover:underline"
-                        >
-                          Otvori
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
+          <DashboardPeriodsTable periods={tableRows} overdue={overdue} />
         )}
       </div>
     </div>

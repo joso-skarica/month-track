@@ -89,6 +89,8 @@ export interface ReminderSettings {
   follow_up_body: string | null;
   signature: string | null;
   auto_send_enabled: boolean;
+  /** Day 1–28 of the following month; after end of this day (local), incomplete months show as overdue. */
+  overdue_threshold_day: number;
   created_at: string;
   updated_at: string;
 }

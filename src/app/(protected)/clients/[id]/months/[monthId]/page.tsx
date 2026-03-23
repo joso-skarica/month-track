@@ -5,6 +5,7 @@ import { formatCroatianMonth } from '@/lib/utils/months';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MonthChecklist } from '@/components/month-checklist';
+import { MonthPeriodNavigation } from '@/components/month-period-navigation';
 import type { Client, MonthlyPeriod } from '@/types/db';
 
 export default async function MonthPage({
@@ -70,6 +71,12 @@ export default async function MonthPage({
           <Link href={`/clients/${clientId}`}>Natrag na klijenta</Link>
         </Button>
       </div>
+
+      <MonthPeriodNavigation
+        clientId={clientId}
+        year={period.year}
+        month={period.month}
+      />
 
       <MonthChecklist
         monthlyPeriod={period}
