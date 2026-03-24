@@ -16,7 +16,6 @@ import {
   normalizeOverdueThresholdDay,
 } from '@/lib/utils/months';
 import type { ReminderSettings } from '@/types/db';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -30,15 +29,37 @@ const TEMPLATE_VARS = [
   { token: '{{firm_signature}}', label: 'Potpis' },
 ] as const;
 
-function TemplateVarChips() {
+const templateVarChipClass =
+  'inline-flex shrink-0 items-center rounded border border-border/45 bg-background/80 px-1.5 py-px font-mono text-[10px] font-normal tracking-tight text-muted-foreground/80';
+
+function TemplateVarChip({
+  token,
+  title,
+}: {
+  token: string;
+  title?: string;
+}) {
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <span className="text-[11px] text-muted-foreground/70">Varijable:</span>
-      {TEMPLATE_VARS.map((v) => (
-        <Badge key={v.token} variant="secondary" className="h-5 gap-1 px-1.5 text-[10px] font-normal">
-          <code className="font-mono">{v.token}</code>
-        </Badge>
-      ))}
+    <span className={templateVarChipClass} title={title}>
+      {token}
+    </span>
+  );
+}
+
+function TemplateVariablesHint() {
+  return (
+    <div
+      className="mt-2 rounded-md border border-border/40 bg-muted/10 px-3 py-2"
+      role="note"
+    >
+      <p className="mb-1.5 text-[10px] leading-snug text-muted-foreground/70 sm:text-[11px]">
+        Možete koristiti ove oznake u predmetu i tekstu poruke:
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        {TEMPLATE_VARS.map((v) => (
+          <TemplateVarChip key={v.token} token={v.token} title={v.label} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -326,7 +347,7 @@ export function ReminderSettingsForm({ settings }: Props) {
               className={textareaTall}
             />
           </div>
-          <TemplateVarChips />
+          <TemplateVariablesHint />
           </div>
         </div>
 
@@ -361,7 +382,7 @@ export function ReminderSettingsForm({ settings }: Props) {
               className={textareaTall}
             />
           </div>
-          <TemplateVarChips />
+          <TemplateVariablesHint />
           </div>
         </div>
 
@@ -380,12 +401,10 @@ export function ReminderSettingsForm({ settings }: Props) {
               placeholder={"S poštovanjem,\nVaš računovodstveni ured"}
               className={`${textareaBase} min-h-[3.5rem]`}
             />
-            <p className="text-[11px] text-muted-foreground">
-              Umeće se kao{' '}
-              <Badge variant="secondary" className="h-4 px-1 text-[10px] font-normal">
-                <code className="font-mono">{'{{firm_signature}}'}</code>
-              </Badge>
-              {' '}u predloške. Ako je prazno, koristi se &quot;Month-Track&quot;.
+            <p className="text-[10px] leading-snug text-muted-foreground/70 sm:text-[11px]">
+              U predlošcima se umeće oznakom{' '}
+              <TemplateVarChip token="{{firm_signature}}" title="Potpis" />
+              . Ako je polje prazno, koristi se &quot;Month-Track&quot;.
             </p>
           </div>
           </div>
