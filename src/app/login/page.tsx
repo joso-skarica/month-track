@@ -60,7 +60,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-sm rounded-xl border border-border/90 bg-card p-8 shadow-sm">
-        <div className="mb-6 flex flex-col items-center gap-2 text-center">
+        <div className="mb-7 flex flex-col items-center gap-3 text-center">
           <Logo size="lg" />
           <p className="text-sm leading-relaxed text-muted-foreground">
             {mode === 'signin'

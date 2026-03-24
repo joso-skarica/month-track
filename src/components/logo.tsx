@@ -8,8 +8,8 @@ type Props = {
 };
 
 const sizeConfig = {
-  sm: { icon: 20, text: 'text-sm', gap: 'gap-2' },
-  lg: { icon: 28, text: 'text-xl', gap: 'gap-2.5' },
+  sm: { icon: 20, wordmark: 'text-sm' },
+  lg: { icon: 36, wordmark: 'text-xl' },
 } as const;
 
 function CalendarCheckIcon({ size }: { size: number }) {
@@ -22,7 +22,6 @@ function CalendarCheckIcon({ size }: { size: number }) {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      {/* Calendar body */}
       <rect
         x="3"
         y="5"
@@ -33,21 +32,10 @@ function CalendarCheckIcon({ size }: { size: number }) {
         strokeWidth="1.75"
         fill="none"
       />
-      {/* Calendar top bar / header band */}
-      <rect
-        x="3"
-        y="5"
-        width="18"
-        height="5"
-        rx="2.5"
-        className="fill-primary"
-      />
-      {/* Snap the bottom corners of the header to be square */}
+      <rect x="3" y="5" width="18" height="5" rx="2.5" className="fill-primary" />
       <rect x="3" y="7.5" width="18" height="2.5" className="fill-primary" />
-      {/* Calendar pegs */}
       <line x1="8" y1="3" x2="8" y2="6.5" className="stroke-primary" strokeWidth="1.75" strokeLinecap="round" />
       <line x1="16" y1="3" x2="16" y2="6.5" className="stroke-primary" strokeWidth="1.75" strokeLinecap="round" />
-      {/* Checkmark */}
       <polyline
         points="8.5,14.5 11,17 15.5,12.5"
         className="stroke-primary"
@@ -60,22 +48,39 @@ function CalendarCheckIcon({ size }: { size: number }) {
   );
 }
 
+function Wordmark({ className }: { className?: string }) {
+  return (
+    <span className={cn('tracking-tight', className)}>
+      <span className="font-bold text-foreground">Month</span>
+      <span className="font-light text-primary">-</span>
+      <span className="font-normal text-foreground">Track</span>
+    </span>
+  );
+}
+
 export function Logo({ size = 'sm', className }: Props) {
   const cfg = sizeConfig[size];
 
+  if (size === 'lg') {
+    return (
+      <div
+        className={cn('flex flex-col items-center gap-1.5', className)}
+        role="img"
+        aria-label="Month-Track"
+      >
+        <CalendarCheckIcon size={cfg.icon} />
+        <Wordmark className={cfg.wordmark} />
+      </div>
+    );
+  }
+
   return (
     <span
-      className={cn(
-        'inline-flex items-center',
-        cfg.gap,
-        className,
-      )}
+      className={cn('inline-flex items-center gap-2', className)}
       aria-label="Month-Track"
     >
       <CalendarCheckIcon size={cfg.icon} />
-      <span className={cn(cfg.text, 'font-semibold tracking-tight text-foreground')}>
-        Month-Track
-      </span>
+      <Wordmark className={cfg.wordmark} />
     </span>
   );
 }
