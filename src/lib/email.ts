@@ -1,6 +1,8 @@
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const USER_FACING_SEND_ERROR =
+  'Slanje na vanjske adrese trenutno nije omogućeno dok nije potvrđena domena za e-poštu.';
 
 type SendEmailParams = {
   to: string;
@@ -25,8 +27,7 @@ export async function sendEmail(params: SendEmailParams): Promise<SendResult> {
       console.error('[email] Resend API error:', error.message);
       return {
         success: false,
-        error:
-          'Slanje nije moguće — provjerite postavke domene za slanje e-pošte ili pokušajte ponovo.',
+        error: USER_FACING_SEND_ERROR,
       };
     }
 
@@ -35,8 +36,7 @@ export async function sendEmail(params: SendEmailParams): Promise<SendResult> {
     console.error('[email] Unexpected error:', err);
     return {
       success: false,
-      error:
-        'Slanje nije moguće — provjerite postavke domene za slanje e-pošte ili pokušajte ponovo.',
+      error: USER_FACING_SEND_ERROR,
     };
   }
 }

@@ -10,6 +10,11 @@ export function formatCroatianMonth(month: number, year: number): string {
   return `${name} ${year}`;
 }
 
+/** Month label only (no year), for email templates that use {{month_name}} and {{year}} separately. */
+export function formatCroatianMonthNameOnly(month: number): string {
+  return CROATIAN_MONTHS[month - 1];
+}
+
 export const DEFAULT_OVERDUE_THRESHOLD_DAY = 10;
 
 export const DEFAULT_FIRST_REMINDER_DAY_OFFSET = 3;

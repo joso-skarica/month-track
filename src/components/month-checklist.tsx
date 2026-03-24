@@ -273,32 +273,38 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-2.5">
             {hasMissing && (
-              <p className="text-sm text-amber-900/90">
+              <p className="text-xs text-amber-900/90">
                 <span className="font-semibold tabular-nums">{missingCount}</span>{' '}
                 od {sorted.length} dokumenata još nedostaje.
               </p>
             )}
 
             {error && (
-              <p role="alert" className="text-sm font-medium text-destructive">
+              <p
+                role="alert"
+                className="rounded-md border border-red-200/80 bg-red-50/75 px-3 py-2 text-xs font-medium text-red-800"
+              >
                 {error}
               </p>
             )}
             {successMsg && (
-              <p role="status" className="text-sm font-medium text-emerald-800">
+              <p
+                role="status"
+                className="rounded-md border border-emerald-200/80 bg-emerald-50/75 px-3 py-2 text-xs font-medium text-emerald-800"
+              >
                 {successMsg}
               </p>
             )}
           </div>
 
-          <div className="rounded-xl border border-border/90 bg-slate-50/50 p-4 shadow-sm sm:p-5">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+          <div className="rounded-xl border border-border/90 bg-slate-50/55 p-3.5 shadow-sm sm:p-4">
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
               Radnje za ovaj mjesec
             </p>
-            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-start sm:gap-6">
-              <div className="flex min-w-[12rem] max-w-sm flex-col gap-1.5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:gap-4">
+              <div className="flex min-w-[11rem] max-w-sm flex-col gap-1">
                 <Button
                   onClick={handleMarkReady}
                   disabled={isPending || hasMissing || isReady}
@@ -316,7 +322,7 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
                 )}
               </div>
 
-              <div className="flex min-w-[12rem] max-w-sm flex-col gap-1.5">
+              <div className="flex min-w-[11rem] max-w-sm flex-col gap-1">
                 <Button
                   variant="outline"
                   onClick={handleSendReminder}

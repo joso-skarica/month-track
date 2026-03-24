@@ -1,5 +1,5 @@
 import type { createClient } from '@/lib/supabase/server';
-import { formatCroatianMonth } from '@/lib/utils/months';
+import { formatCroatianMonthNameOnly } from '@/lib/utils/months';
 import { renderTemplate } from '@/lib/utils/reminders';
 import { sendEmail } from '@/lib/email';
 import type { ReminderSettings, Client, MonthlyPeriod, ReminderType } from '@/types/db';
@@ -141,7 +141,7 @@ export async function sendPeriodReminder(
     };
   }
 
-  const monthName = formatCroatianMonth(period.month, period.year);
+  const monthName = formatCroatianMonthNameOnly(period.month);
   const missingList = missingDocs
     .map(
       (d) =>
@@ -154,12 +154,13 @@ export async function sendPeriodReminder(
     reminderType,
   );
 
+  const trimmedSignature = settings.signature?.trim() ?? '';
   const vars = {
     company_name: client.company_name,
     month_name: monthName,
     year: period.year,
     missing_documents_list: missingList,
-    firm_signature: settings.signature || '',
+    firm_signature: trimmedSignature || 'Month-Track',
   };
 
   const subject = renderTemplate(subjectTemplate, vars);
@@ -175,7 +176,8 @@ export async function sendPeriodReminder(
     return {
       ok: false,
       code: 'email_failed',
-      message: emailResult.error ?? 'Nepoznata greška pri slanju.',
+      message:
+        'Slanje na vanjske adrese trenutno nije omogućeno dok nije potvrđena domena za e-poštu.',
     };
   }
 

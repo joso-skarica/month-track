@@ -304,9 +304,9 @@ export function ReminderSettingsForm({ settings }: Props) {
               className={textareaTall}
             />
             <p className="text-xs leading-relaxed text-muted-foreground">
-              Dostupne varijable: {'{{company_name}}'}, {'{{month_name}}'},{' '}
-              {'{{year}}'}, {'{{missing_documents_list}}'},{' '}
-              {'{{firm_signature}}'}
+              Dostupne varijable: {'{{company_name}}'}, {'{{month_name}}'} (samo
+              ime mjeseca), {'{{year}}'}, {'{{missing_documents_list}}'},{' '}
+              {'{{firm_signature}}'} (ako je prazno, koristi se &quot;Month-Track&quot;)
             </p>
           </div>
           </div>

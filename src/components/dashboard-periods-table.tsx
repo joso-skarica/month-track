@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useTransition } from 'react';
+import { useEffect, useMemo, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Mail } from 'lucide-react';
@@ -84,7 +84,7 @@ function formatBulkSummary(
     const detailLines = (Object.entries(skipCounts) as [BulkReminderSkipCode, number][])
       .filter(([, n]) => n > 0)
       .map(([code, n]) => {
-        const label = SKIP_LABELS[code] ?? code;
+        const label = SKIP_LABELS[code] ?? 'drugi razlog';
         return `${n}× ${label}`;
       });
     if (detailLines.length > 0) {
@@ -123,11 +123,27 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
   }, [periods, search, typeFilter, statusFilter]);
 
   const visibleIds = useMemo(() => filtered.map((p) => p.id), [filtered]);
+  const visibleIdSet = useMemo(() => new Set(visibleIds), [visibleIds]);
+  const visibleSelectedCount = useMemo(
+    () => visibleIds.filter((id) => selected.has(id)).length,
+    [visibleIds, selected],
+  );
 
   const allVisibleSelected =
-    visibleIds.length > 0 &&
-    visibleIds.every((id) => selected.has(id));
-  const someVisibleSelected = visibleIds.some((id) => selected.has(id));
+    visibleIds.length > 0 && visibleSelectedCount === visibleIds.length;
+  const someVisibleSelected = visibleSelectedCount > 0 && !allVisibleSelected;
+
+  // Keep bulk selection scoped to the currently filtered rows to avoid hidden-row carryover.
+  useEffect(() => {
+    setSelected((prev) => {
+      if (prev.size === 0) return prev;
+      const next = new Set<string>();
+      prev.forEach((id) => {
+        if (visibleIdSet.has(id)) next.add(id);
+      });
+      return next.size === prev.size ? prev : next;
+    });
+  }, [visibleIdSet]);
 
   function toggleSelectAllVisible(checked: boolean) {
     setSelected((prev) => {
@@ -154,7 +170,7 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
   }
 
   function handleBulkSend() {
-    const ids = [...selected];
+    const ids = visibleIds.filter((id) => selected.has(id));
     if (ids.length === 0) return;
     setError(null);
     setFeedback(null);
@@ -213,15 +229,33 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center gap-3">
-          {selected.size > 0 ? (
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={isPending || visibleIds.length === 0 || allVisibleSelected}
+            onClick={() => toggleSelectAllVisible(true)}
+          >
+            Odaberi sve vidljive
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            disabled={isPending || visibleSelectedCount === 0}
+            onClick={() => setSelected(new Set())}
+          >
+            Očisti odabir
+          </Button>
+          {visibleSelectedCount > 0 ? (
             <span className="text-sm tabular-nums text-muted-foreground">
-              Odabrano: {selected.size}
+              Odabrano: {visibleSelectedCount}/{visibleIds.length}
             </span>
           ) : null}
           <Button
             type="button"
-            disabled={selected.size === 0 || isPending}
+            disabled={visibleSelectedCount === 0 || isPending}
             onClick={handleBulkSend}
           >
             {isPending ? 'Šaljem…' : 'Pošalji podsjetnike'}
