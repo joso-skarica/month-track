@@ -11,6 +11,10 @@ export function formatCroatianMonth(month: number, year: number): string {
 }
 
 export const DEFAULT_OVERDUE_THRESHOLD_DAY = 10;
+
+export const DEFAULT_FIRST_REMINDER_DAY_OFFSET = 3;
+export const DEFAULT_FOLLOW_UP_REMINDER_DAY_OFFSET = 7;
+export const DEFAULT_FINAL_REMINDER_DAY_OFFSET = 10;
 export const OVERDUE_THRESHOLD_DAY_MIN = 1;
 export const OVERDUE_THRESHOLD_DAY_MAX = 28;
 
@@ -27,6 +31,32 @@ export function normalizeOverdueThresholdDay(raw: unknown): number {
 }
 
 /**
+ * End of the given calendar day (1–28) in the month immediately after the tracked period (local time).
+ * e.g. January 2026 + day 10 → 23:59:59 on 10 February 2026.
+ */
+export function followingMonthDayEnd(
+  periodYear: number,
+  periodMonth: number,
+  day: number,
+): Date {
+  const d = normalizeOverdueThresholdDay(day);
+  const deadlineMonth = periodMonth + 1;
+  const deadlineYear = deadlineMonth > 12 ? periodYear + 1 : periodYear;
+  const normalized = deadlineMonth > 12 ? 1 : deadlineMonth;
+  return new Date(deadlineYear, normalized - 1, d, 23, 59, 59);
+}
+
+/** True once `now` is strictly after {@link followingMonthDayEnd} for the given period and day. */
+export function isPastFollowingMonthDay(
+  periodYear: number,
+  periodMonth: number,
+  day: number,
+  now: Date = new Date(),
+): boolean {
+  return now > followingMonthDayEnd(periodYear, periodMonth, day);
+}
+
+/**
  * Incomplete month is overdue after the configured day of the following calendar month (end of that local day).
  * e.g. threshold 10 and January 2026 → overdue after 23:59:59 on 10 February 2026.
  */
@@ -35,13 +65,7 @@ export function isOverdue(
   month: number,
   thresholdDay: number = DEFAULT_OVERDUE_THRESHOLD_DAY,
 ): boolean {
-  const day = normalizeOverdueThresholdDay(thresholdDay);
-  const now = new Date();
-  const deadlineMonth = month + 1;
-  const deadlineYear = deadlineMonth > 12 ? year + 1 : year;
-  const normalized = deadlineMonth > 12 ? 1 : deadlineMonth;
-  const deadline = new Date(deadlineYear, normalized - 1, day, 23, 59, 59);
-  return now > deadline;
+  return isPastFollowingMonthDay(year, month, thresholdDay, new Date());
 }
 
 /** Calendar month arithmetic (month 1–12). */

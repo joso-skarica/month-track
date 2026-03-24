@@ -30,8 +30,10 @@ export default async function ReminderSettingsPage() {
           Postavke podsjetnika
         </h1>
         <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          Predlošci e-pošte, potpis i prag zakašnjenja na dashboardu. Promjene
-          vrijede za sve buduće podsjetnike.
+          Predlošci e-pošte, potpis, prag zakašnjenja na dashboardu i pravila
+          automatskih podsjetnika. Promjene vrijede za sve buduće podsjetnike.
+          Gumb &quot;Pokreni sada&quot; u postavkama izvršava istu logiku kao
+          budući zakazani posao.
         </p>
       </div>
       <ReminderSettingsForm settings={settings} />

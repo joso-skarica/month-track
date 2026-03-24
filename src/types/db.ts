@@ -89,6 +89,12 @@ export interface ReminderSettings {
   follow_up_body: string | null;
   signature: string | null;
   auto_send_enabled: boolean;
+  /** Day 1–28 in the month after the period; after end of that local day, first auto reminder may send. */
+  first_reminder_day_offset: number;
+  /** Same anchor; follow-up automated reminder. */
+  follow_up_reminder_day_offset: number;
+  /** Same anchor; final automated reminder (uses follow-up templates). */
+  final_reminder_day_offset: number;
   /** Day 1–28 of the following month; after end of this day (local), incomplete months show as overdue. */
   overdue_threshold_day: number;
   created_at: string;

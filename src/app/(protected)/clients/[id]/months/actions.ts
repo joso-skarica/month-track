@@ -1,14 +1,12 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import { getCurrentPeriod, isValidOpenMonthYearMonth } from '@/lib/utils/months';
 import {
-  getCurrentPeriod,
-  formatCroatianMonth,
-  isValidOpenMonthYearMonth,
-} from '@/lib/utils/months';
-import { renderTemplate } from '@/lib/utils/reminders';
-import { sendEmail } from '@/lib/email';
-import type { DocumentStatus, ReminderSettings, Client, MonthlyPeriod } from '@/types/db';
+  sendPeriodReminder,
+  type SendPeriodReminderSkipCode,
+} from '@/lib/reminders/send-period-reminder';
+import type { DocumentStatus, ReminderSettings } from '@/types/db';
 
 type ActionResult =
   | { success: true; monthlyPeriodId: string }
@@ -18,170 +16,7 @@ type SimpleResult =
   | { success: true }
   | { success: false; error: string };
 
-type SupabaseServer = Awaited<ReturnType<typeof createClient>>;
-
-export type BulkReminderSkipCode =
-  | 'no_settings'
-  | 'not_found'
-  | 'wrong_client'
-  | 'month_ready'
-  | 'no_missing_docs'
-  | 'email_failed'
-  | 'reminder_insert_failed';
-
-type SendPeriodReminderResult =
-  | { ok: true }
-  | { ok: false; code: BulkReminderSkipCode; message: string };
-
-async function sendReminderForPeriod(
-  supabase: SupabaseServer,
-  userId: string,
-  monthlyPeriodId: string,
-  options?: {
-    expectedClientId?: string;
-    settings?: ReminderSettings;
-  },
-): Promise<SendPeriodReminderResult> {
-  let settings = options?.settings;
-  if (!settings) {
-    const { data } = await supabase
-      .from('reminder_settings')
-      .select('*')
-      .eq('owner_user_id', userId)
-      .single<ReminderSettings>();
-    if (!data) {
-      return {
-        ok: false,
-        code: 'no_settings',
-        message: 'Postavke podsjetnika nisu pronađene.',
-      };
-    }
-    settings = data;
-  }
-
-  const { data: periodRow, error: periodError } = await supabase
-    .from('monthly_periods')
-    .select('*, clients!inner(*)')
-    .eq('id', monthlyPeriodId)
-    .single();
-
-  if (periodError || !periodRow) {
-    return {
-      ok: false,
-      code: 'not_found',
-      message: 'Mjesečni period nije pronađen.',
-    };
-  }
-
-  const period = periodRow as unknown as MonthlyPeriod;
-  const client = periodRow.clients as unknown as Client;
-
-  if (client.owner_user_id !== userId) {
-    return {
-      ok: false,
-      code: 'not_found',
-      message: 'Mjesečni period nije pronađen.',
-    };
-  }
-
-  if (
-    options?.expectedClientId !== undefined &&
-    period.client_id !== options.expectedClientId
-  ) {
-    return {
-      ok: false,
-      code: 'wrong_client',
-      message: 'Mjesečni period ne pripada tom klijentu.',
-    };
-  }
-
-  if (period.status !== 'incomplete') {
-    return {
-      ok: false,
-      code: 'month_ready',
-      message: 'Mjesec je označen kao spremno.',
-    };
-  }
-
-  const { data: missingRows } = await supabase
-    .from('monthly_document_statuses')
-    .select('document_types(label_hr)')
-    .eq('monthly_period_id', monthlyPeriodId)
-    .eq('status', 'missing');
-
-  const missingDocs = missingRows ?? [];
-  if (missingDocs.length === 0) {
-    return {
-      ok: false,
-      code: 'no_missing_docs',
-      message: 'Nema dokumenata koji nedostaju — podsjetnik nije potreban.',
-    };
-  }
-
-  const monthName = formatCroatianMonth(period.month, period.year);
-  const missingList = missingDocs
-    .map(
-      (d) =>
-        `- ${(d.document_types as unknown as { label_hr: string }).label_hr}`,
-    )
-    .join('\n');
-
-  const subjectTemplate =
-    settings.default_subject ||
-    'Podsjetnik: nedostajuća dokumentacija za {{company_name}} — {{month_name}} {{year}}';
-  const bodyTemplate =
-    settings.default_body ||
-    'Poštovani,\n\nZa {{company_name}} još uvijek nedostaje sljedeća dokumentacija za {{month_name}} {{year}}:\n\n{{missing_documents_list}}\n\nMolimo dostavite navedenu dokumentaciju.\n\n{{firm_signature}}';
-
-  const vars = {
-    company_name: client.company_name,
-    month_name: monthName,
-    year: period.year,
-    missing_documents_list: missingList,
-    firm_signature: settings.signature || '',
-  };
-
-  const subject = renderTemplate(subjectTemplate, vars);
-  const body = renderTemplate(bodyTemplate, vars);
-
-  const emailResult = await sendEmail({
-    to: client.email,
-    subject,
-    text: body,
-  });
-
-  if (!emailResult.success) {
-    return {
-      ok: false,
-      code: 'email_failed',
-      message: emailResult.error ?? 'Nepoznata greška pri slanju.',
-    };
-  }
-
-  const { error: insertError } = await supabase.from('reminders').insert({
-    monthly_period_id: monthlyPeriodId,
-    client_id: client.id,
-    recipient_email: client.email,
-    subject,
-    body,
-    reminder_type: 'manual',
-  });
-
-  if (insertError) {
-    return {
-      ok: false,
-      code: 'reminder_insert_failed',
-      message: insertError.message,
-    };
-  }
-
-  await supabase
-    .from('monthly_periods')
-    .update({ last_reminder_sent_at: new Date().toISOString() })
-    .eq('id', monthlyPeriodId);
-
-  return { ok: true };
-}
+export type BulkReminderSkipCode = SendPeriodReminderSkipCode;
 
 export async function openMonthForClient(
   clientId: string,
@@ -402,9 +237,13 @@ export async function sendReminder(
     return { success: false, error: 'Niste prijavljeni.' };
   }
 
-  const result = await sendReminderForPeriod(supabase, user.id, monthlyPeriodId, {
-    expectedClientId: clientId,
-  });
+  const result = await sendPeriodReminder(
+    supabase,
+    user.id,
+    monthlyPeriodId,
+    'manual',
+    { expectedClientId: clientId },
+  );
 
   if (!result.ok) {
     if (result.code === 'wrong_client') {
@@ -455,10 +294,11 @@ export async function sendBulkReminders(
   let sent = 0;
 
   for (const monthlyPeriodId of uniqueIds) {
-    const result = await sendReminderForPeriod(
+    const result = await sendPeriodReminder(
       supabase,
       user.id,
       monthlyPeriodId,
+      'manual',
       { settings },
     );
     if (result.ok) {

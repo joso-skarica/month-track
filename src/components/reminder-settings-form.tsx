@@ -5,7 +5,11 @@ import {
   updateReminderSettings,
   type ReminderSettingsFormData,
 } from '@/app/(protected)/settings/reminders/actions';
+import { triggerAutomaticRemindersNow } from '@/app/(protected)/settings/reminders/run-auto-action';
 import {
+  DEFAULT_FINAL_REMINDER_DAY_OFFSET,
+  DEFAULT_FIRST_REMINDER_DAY_OFFSET,
+  DEFAULT_FOLLOW_UP_REMINDER_DAY_OFFSET,
   DEFAULT_OVERDUE_THRESHOLD_DAY,
   OVERDUE_THRESHOLD_DAY_MAX,
   OVERDUE_THRESHOLD_DAY_MIN,
@@ -28,8 +32,10 @@ type Props = {
 
 export function ReminderSettingsForm({ settings }: Props) {
   const [isPending, startTransition] = useTransition();
+  const [runPending, startRunTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [runMessage, setRunMessage] = useState<string | null>(null);
 
   const [defaultSubject, setDefaultSubject] = useState(
     settings.default_subject ?? '',
@@ -52,6 +58,27 @@ export function ReminderSettingsForm({ settings }: Props) {
       ),
     ),
   );
+  const [firstOffsetStr, setFirstOffsetStr] = useState(() =>
+    String(
+      typeof settings.first_reminder_day_offset === 'number'
+        ? settings.first_reminder_day_offset
+        : DEFAULT_FIRST_REMINDER_DAY_OFFSET,
+    ),
+  );
+  const [followUpOffsetStr, setFollowUpOffsetStr] = useState(() =>
+    String(
+      typeof settings.follow_up_reminder_day_offset === 'number'
+        ? settings.follow_up_reminder_day_offset
+        : DEFAULT_FOLLOW_UP_REMINDER_DAY_OFFSET,
+    ),
+  );
+  const [finalOffsetStr, setFinalOffsetStr] = useState(() =>
+    String(
+      typeof settings.final_reminder_day_offset === 'number'
+        ? settings.final_reminder_day_offset
+        : DEFAULT_FINAL_REMINDER_DAY_OFFSET,
+    ),
+  );
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -71,6 +98,28 @@ export function ReminderSettingsForm({ settings }: Props) {
       return;
     }
 
+    const firstParsed = Number.parseInt(firstOffsetStr.trim(), 10);
+    const followParsed = Number.parseInt(followUpOffsetStr.trim(), 10);
+    const finalParsed = Number.parseInt(finalOffsetStr.trim(), 10);
+    const boundsMsg = `Dani za automatske podsjetnike moraju biti cijeli brojevi od ${OVERDUE_THRESHOLD_DAY_MIN} do ${OVERDUE_THRESHOLD_DAY_MAX}.`;
+    for (const n of [firstParsed, followParsed, finalParsed]) {
+      if (
+        Number.isNaN(n) ||
+        !Number.isInteger(n) ||
+        n < OVERDUE_THRESHOLD_DAY_MIN ||
+        n > OVERDUE_THRESHOLD_DAY_MAX
+      ) {
+        setError(boundsMsg);
+        return;
+      }
+    }
+    if (firstParsed > followParsed || followParsed > finalParsed) {
+      setError(
+        'Redoslijed dana mora biti: prvi ≤ follow-up ≤ završni (u sljedećem mjesecu nakon razdoblja).',
+      );
+      return;
+    }
+
     const data: ReminderSettingsFormData = {
       default_subject: defaultSubject.trim(),
       default_body: defaultBody.trim(),
@@ -78,6 +127,9 @@ export function ReminderSettingsForm({ settings }: Props) {
       follow_up_body: followUpBody.trim(),
       signature: signature.trim(),
       auto_send_enabled: autoSend,
+      first_reminder_day_offset: firstParsed,
+      follow_up_reminder_day_offset: followParsed,
+      final_reminder_day_offset: finalParsed,
       overdue_threshold_day: overdueParsed,
     };
 
@@ -87,6 +139,21 @@ export function ReminderSettingsForm({ settings }: Props) {
         setSuccess(true);
       } else {
         setError(result.error);
+      }
+    });
+  }
+
+  function handleRunAutoNow() {
+    setRunMessage(null);
+    setError(null);
+    startRunTransition(async () => {
+      const result = await triggerAutomaticRemindersNow();
+      if (result.success) {
+        setRunMessage(
+          `Završeno: poslano ${result.sentCount}, neuspjelo ${result.failedCount}.`,
+        );
+      } else {
+        setRunMessage(result.error);
       }
     });
   }
@@ -129,6 +196,83 @@ export function ReminderSettingsForm({ settings }: Props) {
               probleme s kratkim mjesecima.
             </p>
           </div>
+          </div>
+        </div>
+
+        <div className="mt-6 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
+          <div className="border-b border-border/80 bg-slate-50/60 px-5 py-4">
+            <h3 className="text-sm font-semibold text-foreground">
+              Automatski podsjetnici
+            </h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Dani u kalendarskom mjesecu odmah nakon razdoblja (nakon kraja tog
+              dana šalje se e-pošta, ako mjesec još nije potpun i ima nedostajućih
+              dokumenata). Završni korak koristi isti predložak kao follow-up.
+            </p>
+          </div>
+          <div className="space-y-4 px-5 py-4">
+            <div className="flex items-center gap-3">
+              <Checkbox
+                id="auto_send"
+                checked={autoSend}
+                onCheckedChange={(checked) => setAutoSend(checked === true)}
+              />
+              <Label htmlFor="auto_send" className="text-sm font-normal">
+                Uključi automatsko slanje (za buduće pokretanje iz sustava)
+              </Label>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="first_reminder_offset">Prvi (dan)</Label>
+                <Input
+                  id="first_reminder_offset"
+                  type="number"
+                  inputMode="numeric"
+                  min={OVERDUE_THRESHOLD_DAY_MIN}
+                  max={OVERDUE_THRESHOLD_DAY_MAX}
+                  value={firstOffsetStr}
+                  onChange={(e) => setFirstOffsetStr(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="follow_up_reminder_offset">Follow-up (dan)</Label>
+                <Input
+                  id="follow_up_reminder_offset"
+                  type="number"
+                  inputMode="numeric"
+                  min={OVERDUE_THRESHOLD_DAY_MIN}
+                  max={OVERDUE_THRESHOLD_DAY_MAX}
+                  value={followUpOffsetStr}
+                  onChange={(e) => setFollowUpOffsetStr(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="final_reminder_offset">Završni (dan)</Label>
+                <Input
+                  id="final_reminder_offset"
+                  type="number"
+                  inputMode="numeric"
+                  min={OVERDUE_THRESHOLD_DAY_MIN}
+                  max={OVERDUE_THRESHOLD_DAY_MAX}
+                  value={finalOffsetStr}
+                  onChange={(e) => setFinalOffsetStr(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={isPending || runPending}
+                onClick={handleRunAutoNow}
+              >
+                {runPending ? 'Izvršavanje...' : 'Pokreni sada'}
+              </Button>
+              <span className="text-xs text-muted-foreground">
+                Ručno pokreće istu logiku koju će kasnije pozvati zakazani posao
+                (potrebno je uključeno automatsko slanje).
+              </span>
+            </div>
           </div>
         </div>
 
@@ -219,22 +363,16 @@ export function ReminderSettingsForm({ settings }: Props) {
           </div>
           </div>
         </div>
-
-        <div className="mt-6 flex items-center gap-3 rounded-lg border border-dashed border-border/90 bg-muted/20 px-4 py-3">
-          <Checkbox
-            id="auto_send"
-            checked={autoSend}
-            onCheckedChange={(checked) => setAutoSend(checked === true)}
-            disabled
-          />
-          <Label
-            htmlFor="auto_send"
-            className="cursor-default text-sm text-muted-foreground"
-          >
-            Automatsko slanje podsjetnika (dolazi uskoro)
-          </Label>
-        </div>
       </fieldset>
+
+      {runMessage && (
+        <p
+          role="status"
+          className="text-sm text-muted-foreground"
+        >
+          {runMessage}
+        </p>
+      )}
 
       {error && (
         <p role="alert" className="text-sm font-medium text-destructive">
