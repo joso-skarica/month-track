@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -59,14 +60,14 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-sm rounded-xl border border-border/90 bg-card p-8 shadow-sm">
-        <h1 className="mb-1 text-xl font-semibold tracking-tight text-foreground">
-          Month-Track
-        </h1>
-        <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
-          {mode === 'signin'
-            ? 'Prijavite se u svoj račun'
-            : 'Napravite novi račun'}
-        </p>
+        <div className="mb-6 flex flex-col items-center gap-2 text-center">
+          <Logo size="lg" />
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {mode === 'signin'
+              ? 'Prijavite se u svoj račun'
+              : 'Napravite novi račun'}
+          </p>
+        </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">

@@ -16,15 +16,37 @@ import {
   normalizeOverdueThresholdDay,
 } from '@/lib/utils/months';
 import type { ReminderSettings } from '@/types/db';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 
+const TEMPLATE_VARS = [
+  { token: '{{company_name}}', label: 'Naziv tvrtke' },
+  { token: '{{month_name}}', label: 'Mjesec' },
+  { token: '{{year}}', label: 'Godina' },
+  { token: '{{missing_documents_list}}', label: 'Popis dokumenata' },
+  { token: '{{firm_signature}}', label: 'Potpis' },
+] as const;
+
+function TemplateVarChips() {
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      <span className="text-[11px] text-muted-foreground/70">Varijable:</span>
+      {TEMPLATE_VARS.map((v) => (
+        <Badge key={v.token} variant="secondary" className="h-5 gap-1 px-1.5 text-[10px] font-normal">
+          <code className="font-mono">{v.token}</code>
+        </Badge>
+      ))}
+    </div>
+  );
+}
+
 const textareaBase =
   'w-full rounded-md border border-input bg-card px-3 py-2.5 text-sm leading-relaxed shadow-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/35 disabled:cursor-not-allowed disabled:bg-muted/40 disabled:opacity-60';
 
-const textareaTall = `${textareaBase} min-h-[140px]`;
+const textareaTall = `${textareaBase} min-h-[110px]`;
 
 type Props = {
   settings: ReminderSettings;
@@ -281,15 +303,18 @@ export function ReminderSettingsForm({ settings }: Props) {
             <h3 className="text-sm font-semibold text-foreground">
               3. Predložak prvog podsjetnika
             </h3>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
+              Koristi se za prvi automatski ili ručni podsjetnik
+            </p>
           </div>
-          <div className="space-y-4 px-5 py-4">
+          <div className="space-y-3 px-5 py-3.5">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="default_subject">Predmet</Label>
             <Input
               id="default_subject"
               value={defaultSubject}
               onChange={(e) => setDefaultSubject(e.target.value)}
-              placeholder="Podsjetnik: nedostajuća dokumentacija za {{company_name}} — {{month_name}} {{year}}"
+              placeholder="Podsjetnik: dokumentacija — {{company_name}}, {{month_name}} {{year}}"
             />
           </div>
 
@@ -297,18 +322,14 @@ export function ReminderSettingsForm({ settings }: Props) {
             <Label htmlFor="default_body">Tekst poruke</Label>
             <textarea
               id="default_body"
-              rows={5}
+              rows={4}
               value={defaultBody}
               onChange={(e) => setDefaultBody(e.target.value)}
-              placeholder="Poštovani,&#10;&#10;za {{company_name}} još uvijek nedostaje sljedeća dokumentacija za {{month_name}} {{year}}:&#10;&#10;{{missing_documents_list}}&#10;&#10;Molimo dostavite navedenu dokumentaciju.&#10;&#10;{{firm_signature}}"
+              placeholder={"Poštovani,\n\nza {{company_name}} nedostaje dokumentacija za {{month_name}} {{year}}:\n\n{{missing_documents_list}}\n\nMolimo dostavite navedeno.\n\n{{firm_signature}}"}
               className={textareaTall}
             />
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              Dostupne varijable: {'{{company_name}}'}, {'{{month_name}}'} (samo
-              ime mjeseca), {'{{year}}'}, {'{{missing_documents_list}}'},{' '}
-              {'{{firm_signature}}'} (ako je prazno, koristi se &quot;Month-Track&quot;)
-            </p>
           </div>
+          <TemplateVarChips />
           </div>
         </div>
 
@@ -317,15 +338,18 @@ export function ReminderSettingsForm({ settings }: Props) {
             <h3 className="text-sm font-semibold text-foreground">
               4. Predložak follow-up podsjetnika
             </h3>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
+              Koristi se za ponovljene i završne podsjetnike
+            </p>
           </div>
-          <div className="space-y-4 px-5 py-4">
+          <div className="space-y-3 px-5 py-3.5">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="follow_up_subject">Predmet</Label>
             <Input
               id="follow_up_subject"
               value={followUpSubject}
               onChange={(e) => setFollowUpSubject(e.target.value)}
-              placeholder="Urgentno: nedostajuća dokumentacija za {{company_name}}"
+              placeholder="Hitno: dokumentacija — {{company_name}}, {{month_name}} {{year}}"
             />
           </div>
 
@@ -333,13 +357,14 @@ export function ReminderSettingsForm({ settings }: Props) {
             <Label htmlFor="follow_up_body">Tekst poruke</Label>
             <textarea
               id="follow_up_body"
-              rows={5}
+              rows={4}
               value={followUpBody}
               onChange={(e) => setFollowUpBody(e.target.value)}
-              placeholder="Poštovani,&#10;&#10;ovo je ponovljeni podsjetnik..."
+              placeholder={"Poštovani,\n\novo je ponovljeni podsjetnik za {{company_name}}.\n\nNedostaje dokumentacija za {{month_name}} {{year}}:\n\n{{missing_documents_list}}\n\nMolimo hitno dostavite.\n\n{{firm_signature}}"}
               className={textareaTall}
             />
           </div>
+          <TemplateVarChips />
           </div>
         </div>
 
@@ -347,19 +372,24 @@ export function ReminderSettingsForm({ settings }: Props) {
           <div className="border-b border-border/80 bg-slate-50/60 px-5 py-3">
             <h3 className="text-sm font-semibold text-foreground">5. Potpis</h3>
           </div>
-          <div className="space-y-4 px-5 py-4">
+          <div className="px-5 py-3.5">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="signature">
-              Potpis (koristi se kao {'{{firm_signature}}'})
-            </Label>
+            <Label htmlFor="signature">Potpis e-pošte</Label>
             <textarea
               id="signature"
-              rows={3}
+              rows={2}
               value={signature}
               onChange={(e) => setSignature(e.target.value)}
-              placeholder="S poštovanjem,&#10;Vaš računovodstveni ured"
-              className={`${textareaBase} min-h-[4.5rem]`}
+              placeholder={"S poštovanjem,\nVaš računovodstveni ured"}
+              className={`${textareaBase} min-h-[3.5rem]`}
             />
+            <p className="text-[11px] text-muted-foreground">
+              Umeće se kao{' '}
+              <Badge variant="secondary" className="h-4 px-1 text-[10px] font-normal">
+                <code className="font-mono">{'{{firm_signature}}'}</code>
+              </Badge>
+              {' '}u predloške. Ako je prazno, koristi se &quot;Month-Track&quot;.
+            </p>
           </div>
           </div>
         </div>

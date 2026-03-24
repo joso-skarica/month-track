@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -26,9 +27,7 @@ export function Nav() {
     <header className="sticky top-0 z-40 border-b border-border/90 bg-card/95 shadow-sm backdrop-blur-sm supports-[backdrop-filter]:bg-card/90 print:hidden">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-8">
-          <span className="text-sm font-semibold tracking-tight text-foreground">
-            Month-Track
-          </span>
+          <Logo size="sm" />
           <nav className="flex items-center gap-0.5">
             {links.map((link) => (
               <Link
