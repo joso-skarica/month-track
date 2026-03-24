@@ -67,7 +67,7 @@ export default async function ClientDetailPage({
     client.client_type;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-foreground">
@@ -88,7 +88,7 @@ export default async function ClientDetailPage({
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+      <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Podaci o klijentu</CardTitle>

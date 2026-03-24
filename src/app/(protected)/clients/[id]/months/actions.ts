@@ -78,7 +78,8 @@ export async function openMonthForClient(
         return { success: true, monthlyPeriodId: raceExisting.id };
       }
     }
-    return { success: false, error: periodError.message };
+    console.error('[openMonth] Insert period error:', periodError.message);
+    return { success: false, error: 'Došlo je do pogreške. Pokušajte ponovo.' };
   }
 
   // Fetch required document types for this client
@@ -100,7 +101,8 @@ export async function openMonthForClient(
       .insert(rows);
 
     if (statusError) {
-      return { success: false, error: statusError.message };
+      console.error('[openMonth] Insert statuses error:', statusError.message);
+      return { success: false, error: 'Došlo je do pogreške. Pokušajte ponovo.' };
     }
   }
 
@@ -145,7 +147,8 @@ export async function updateDocumentStatus(
     .eq('id', docStatusId);
 
   if (updateError) {
-    return { success: false, error: updateError.message };
+    console.error('[updateDocStatus] Update error:', updateError.message);
+    return { success: false, error: 'Došlo je do pogreške. Pokušajte ponovo.' };
   }
 
   // Recalculate month status
@@ -189,7 +192,8 @@ export async function markMonthReady(
     .eq('id', monthlyPeriodId);
 
   if (error) {
-    return { success: false, error: error.message };
+    console.error('[markMonthReady] Update error:', error.message);
+    return { success: false, error: 'Došlo je do pogreške. Pokušajte ponovo.' };
   }
 
   return { success: true };
@@ -217,7 +221,8 @@ export async function recalcMonthStatus(
       .eq('status', 'ready');
 
     if (error) {
-      return { success: false, error: error.message };
+      console.error('[recalcMonthStatus] Update error:', error.message);
+      return { success: false, error: 'Došlo je do pogreške. Pokušajte ponovo.' };
     }
   }
 

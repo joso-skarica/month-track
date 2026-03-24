@@ -189,10 +189,11 @@ export async function sendPeriodReminder(
   });
 
   if (insertError) {
+    console.error('[reminder] Insert error:', insertError.message);
     return {
       ok: false,
       code: 'reminder_insert_failed',
-      message: insertError.message,
+      message: 'Zapis podsjetnika nije uspješno spremljen. Pokušajte ponovo.',
     };
   }
 

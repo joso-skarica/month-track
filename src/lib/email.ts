@@ -22,14 +22,21 @@ export async function sendEmail(params: SendEmailParams): Promise<SendResult> {
     });
 
     if (error) {
-      return { success: false, error: error.message };
+      console.error('[email] Resend API error:', error.message);
+      return {
+        success: false,
+        error:
+          'Slanje nije moguće — provjerite postavke domene za slanje e-pošte ili pokušajte ponovo.',
+      };
     }
 
     return { success: true, id: data?.id ?? '' };
   } catch (err) {
+    console.error('[email] Unexpected error:', err);
     return {
       success: false,
-      error: err instanceof Error ? err.message : 'Greška pri slanju emaila.',
+      error:
+        'Slanje nije moguće — provjerite postavke domene za slanje e-pošte ili pokušajte ponovo.',
     };
   }
 }

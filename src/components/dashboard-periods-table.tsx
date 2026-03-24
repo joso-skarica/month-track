@@ -3,7 +3,9 @@
 import { useMemo, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Mail } from 'lucide-react';
 import { CLIENT_TYPES } from '@/lib/constants/client-presets';
+import { cn } from '@/lib/utils';
 import {
   sendBulkReminders,
   type BulkReminderSkipCode,
@@ -242,7 +244,7 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
       ) : null}
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-14 text-center shadow-sm">
+        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-10 text-center shadow-sm">
           {periods.length === 0 ? (
             <p className="text-muted-foreground">Nema otvorenih mjeseci.</p>
           ) : (
@@ -301,7 +303,18 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
               </TableHeader>
               <TableBody>
                 {filtered.map((period) => (
-                  <TableRow key={period.id}>
+                  <TableRow
+                    key={period.id}
+                    className={cn(
+                      period.status === 'ready' && 'bg-emerald-50/20',
+                      period.status === 'incomplete' &&
+                        period.missingCount > 0 &&
+                        'bg-red-50/30',
+                      period.status === 'incomplete' &&
+                        period.missingCount === 0 &&
+                        'bg-amber-50/20',
+                    )}
+                  >
                     <TableCell className="w-12 align-middle">
                       <Checkbox
                         aria-label={`Odaberi ${period.company_name}`}
@@ -346,15 +359,20 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
                       )}
                     </TableCell>
                     <TableCell className="tabular-nums text-xs text-muted-foreground">
-                      {period.last_reminder_sent_at
-                        ? new Date(
+                      {period.last_reminder_sent_at ? (
+                        <span className="inline-flex items-center gap-1.5">
+                          <Mail className="size-3 shrink-0 text-muted-foreground/60" aria-hidden />
+                          {new Date(
                             period.last_reminder_sent_at,
                           ).toLocaleDateString('hr-HR', {
                             day: '2-digit',
                             month: '2-digit',
                             year: 'numeric',
-                          })
-                        : '—'}
+                          })}
+                        </span>
+                      ) : (
+                        '—'
+                      )}
                     </TableCell>
                     <TableCell>
                       <Link

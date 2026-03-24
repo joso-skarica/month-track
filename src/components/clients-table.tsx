@@ -75,7 +75,7 @@ export function ClientsTable({ clients }: { clients: Client[] }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-14 text-center shadow-sm">
+        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-10 text-center shadow-sm">
           {clients.length === 0 ? (
             <>
               <p className="text-muted-foreground">

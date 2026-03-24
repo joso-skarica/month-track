@@ -159,12 +159,12 @@ export function ReminderSettingsForm({ settings }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <fieldset disabled={isPending} className="min-w-0">
         <div className="overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
           <div className="border-b border-border/80 bg-slate-50/60 px-5 py-4">
             <h3 className="text-sm font-semibold text-foreground">
-              Rok za zakašnjenje (dashboard)
+              1. Rok za zakašnjenje (dashboard)
             </h3>
             <p className="mt-1 text-xs text-muted-foreground">
               Utječe na prikaz &quot;Zakašnjelo&quot; na dashboardu
@@ -199,10 +199,10 @@ export function ReminderSettingsForm({ settings }: Props) {
           </div>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
+        <div className="mt-5 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
           <div className="border-b border-border/80 bg-slate-50/60 px-5 py-4">
             <h3 className="text-sm font-semibold text-foreground">
-              Automatski podsjetnici
+              2. Automatski podsjetnici
             </h3>
             <p className="mt-1 text-xs text-muted-foreground">
               Dani u kalendarskom mjesecu odmah nakon razdoblja (nakon kraja tog
@@ -276,10 +276,10 @@ export function ReminderSettingsForm({ settings }: Props) {
           </div>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
+        <div className="mt-5 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
           <div className="border-b border-border/80 bg-slate-50/60 px-5 py-3">
             <h3 className="text-sm font-semibold text-foreground">
-              Predložak prvog podsjetnika
+              3. Predložak prvog podsjetnika
             </h3>
           </div>
           <div className="space-y-4 px-5 py-4">
@@ -297,7 +297,7 @@ export function ReminderSettingsForm({ settings }: Props) {
             <Label htmlFor="default_body">Tekst poruke</Label>
             <textarea
               id="default_body"
-              rows={6}
+              rows={5}
               value={defaultBody}
               onChange={(e) => setDefaultBody(e.target.value)}
               placeholder="Poštovani,&#10;&#10;za {{company_name}} još uvijek nedostaje sljedeća dokumentacija za {{month_name}} {{year}}:&#10;&#10;{{missing_documents_list}}&#10;&#10;Molimo dostavite navedenu dokumentaciju.&#10;&#10;{{firm_signature}}"
@@ -312,10 +312,10 @@ export function ReminderSettingsForm({ settings }: Props) {
           </div>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
+        <div className="mt-5 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
           <div className="border-b border-border/80 bg-slate-50/60 px-5 py-3">
             <h3 className="text-sm font-semibold text-foreground">
-              Predložak follow-up podsjetnika
+              4. Predložak follow-up podsjetnika
             </h3>
           </div>
           <div className="space-y-4 px-5 py-4">
@@ -333,7 +333,7 @@ export function ReminderSettingsForm({ settings }: Props) {
             <Label htmlFor="follow_up_body">Tekst poruke</Label>
             <textarea
               id="follow_up_body"
-              rows={6}
+              rows={5}
               value={followUpBody}
               onChange={(e) => setFollowUpBody(e.target.value)}
               placeholder="Poštovani,&#10;&#10;ovo je ponovljeni podsjetnik..."
@@ -343,9 +343,9 @@ export function ReminderSettingsForm({ settings }: Props) {
           </div>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
+        <div className="mt-5 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
           <div className="border-b border-border/80 bg-slate-50/60 px-5 py-3">
-            <h3 className="text-sm font-semibold text-foreground">Potpis</h3>
+            <h3 className="text-sm font-semibold text-foreground">5. Potpis</h3>
           </div>
           <div className="space-y-4 px-5 py-4">
           <div className="flex flex-col gap-1.5">
@@ -358,7 +358,7 @@ export function ReminderSettingsForm({ settings }: Props) {
               value={signature}
               onChange={(e) => setSignature(e.target.value)}
               placeholder="S poštovanjem,&#10;Vaš računovodstveni ured"
-              className={`${textareaBase} min-h-[5.5rem]`}
+              className={`${textareaBase} min-h-[4.5rem]`}
             />
           </div>
           </div>

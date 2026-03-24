@@ -176,9 +176,9 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {sorted.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-14 text-center shadow-sm">
+        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-10 text-center shadow-sm">
           <p className="text-sm font-medium text-foreground/80">
             Nema definiranih dokumenata za ovaj mjesec.
           </p>
@@ -294,10 +294,10 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
           </div>
 
           <div className="rounded-xl border border-border/90 bg-slate-50/50 p-4 shadow-sm sm:p-5">
-            <p className="mb-3 text-xs font-medium text-muted-foreground">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
               Radnje za ovaj mjesec
             </p>
-            <div className="flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-start sm:gap-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-start sm:gap-6">
               <div className="flex min-w-[12rem] max-w-sm flex-col gap-1.5">
                 <Button
                   onClick={handleMarkReady}
@@ -310,7 +310,7 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
                       : 'Označi kao spremno'}
                 </Button>
                 {hasMissing && !isReady && (
-                  <p className="text-xs leading-relaxed text-muted-foreground">
+                  <p className="text-[11px] leading-snug text-muted-foreground">
                     Dostupno kada svi dokumenti budu zaprimljeni ili pregledani.
                   </p>
                 )}
@@ -327,7 +327,7 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
                     : 'Pošalji podsjetnik'}
                 </Button>
                 {!hasMissing && (
-                  <p className="text-xs leading-relaxed text-muted-foreground">
+                  <p className="text-[11px] leading-snug text-muted-foreground">
                     Nema dokumenata koji nedostaju — podsjetnik nije potreban.
                   </p>
                 )}

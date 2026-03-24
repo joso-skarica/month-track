@@ -154,7 +154,7 @@ export default async function DashboardPage() {
   ] as const;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground">
           Dashboard
@@ -171,7 +171,7 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -200,13 +200,13 @@ export default async function DashboardPage() {
         })}
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         <h2 className="text-lg font-semibold tracking-tight text-foreground">
           Klijenti — {monthLabel}
         </h2>
 
         {periods.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border/90 bg-card/80 py-14 text-center shadow-sm">
+          <div className="rounded-xl border border-dashed border-border/90 bg-card/80 py-10 text-center shadow-sm">
             <p className="text-sm font-medium text-foreground/80">
               Nema otvorenih mjeseci za {monthLabel}.
             </p>

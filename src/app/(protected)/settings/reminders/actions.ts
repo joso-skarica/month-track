@@ -93,7 +93,8 @@ export async function updateReminderSettings(
     .eq('owner_user_id', user.id);
 
   if (error) {
-    return { success: false, error: error.message };
+    console.error('[updateReminderSettings] Update error:', error.message);
+    return { success: false, error: 'Došlo je do pogreške pri spremanju. Pokušajte ponovo.' };
   }
 
   return { success: true };
