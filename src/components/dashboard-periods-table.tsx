@@ -278,12 +278,12 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
       ) : null}
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-10 text-center shadow-sm">
+        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-8 text-center shadow-sm">
           {periods.length === 0 ? (
-            <p className="text-muted-foreground">Nema otvorenih mjeseci.</p>
+            <p className="text-sm font-medium text-foreground/70">Nema otvorenih mjeseci.</p>
           ) : (
             <>
-              <p className="text-muted-foreground">
+              <p className="text-sm font-medium text-foreground/70">
                 Nema rezultata za zadane filtere.
               </p>
               {hasFilters && (
@@ -340,7 +340,7 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
                   <TableRow
                     key={period.id}
                     className={cn(
-                      period.status === 'ready' && 'bg-emerald-50/20',
+                      period.status === 'ready' && 'bg-emerald-50/30',
                       period.status === 'incomplete' &&
                         period.missingCount > 0 &&
                         'bg-red-50/30',

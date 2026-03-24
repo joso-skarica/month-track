@@ -152,7 +152,7 @@ export default async function ClientDetailPage({
               </ul>
             ) : (
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm font-medium text-foreground/70">
                   Nema definiranih zahtjeva za dokumente.
                 </p>
                 <Button asChild variant="outline" size="sm">
@@ -190,8 +190,8 @@ export default async function ClientDetailPage({
               Povijest mjeseci
             </p>
             {periods.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-border/90 bg-card py-10 text-center">
-                <p className="text-sm text-muted-foreground">
+              <div className="rounded-xl border border-dashed border-border/90 bg-card py-8 text-center">
+                <p className="text-sm font-medium text-foreground/70">
                   Još nema otvorenih mjeseci za ovog klijenta.
                 </p>
                 <p className="mt-1.5 text-sm text-muted-foreground">

@@ -8,6 +8,7 @@ import {
   markMonthReady,
   sendReminder,
 } from '@/app/(protected)/clients/[id]/months/actions';
+import { CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -176,10 +177,10 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {sorted.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-10 text-center shadow-sm">
-          <p className="text-sm font-medium text-foreground/80">
+        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-8 text-center shadow-sm">
+          <p className="text-sm font-medium text-foreground/70">
             Nema definiranih dokumenata za ovaj mjesec.
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
@@ -300,23 +301,32 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
           </div>
 
           <div className="rounded-xl border border-border/90 bg-slate-50/55 p-3.5 shadow-sm sm:p-4">
-            <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
               Radnje za ovaj mjesec
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:gap-4">
               <div className="flex min-w-[11rem] max-w-sm flex-col gap-1">
-                <Button
-                  onClick={handleMarkReady}
-                  disabled={isPending || hasMissing || isReady}
-                >
-                  {isPending && !hasMissing && !isReady
-                    ? 'Označavanje...'
-                    : isReady
-                      ? 'Već označeno kao spremno'
+                {isReady ? (
+                  <Button
+                    variant="outline"
+                    disabled
+                    className="border-emerald-200 bg-emerald-50/60 text-emerald-700 disabled:opacity-100"
+                  >
+                    <CheckCircle2 className="mr-1.5 size-4" />
+                    Označeno kao spremno
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleMarkReady}
+                    disabled={isPending || hasMissing}
+                  >
+                    {isPending && !hasMissing
+                      ? 'Označavanje...'
                       : 'Označi kao spremno'}
-                </Button>
+                  </Button>
+                )}
                 {hasMissing && !isReady && (
-                  <p className="text-[11px] leading-snug text-muted-foreground">
+                  <p className="text-[10px] leading-snug text-muted-foreground/70">
                     Dostupno kada svi dokumenti budu zaprimljeni ili pregledani.
                   </p>
                 )}
@@ -333,7 +343,7 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
                     : 'Pošalji podsjetnik'}
                 </Button>
                 {!hasMissing && (
-                  <p className="text-[11px] leading-snug text-muted-foreground">
+                  <p className="text-[10px] leading-snug text-muted-foreground/70">
                     Nema dokumenata koji nedostaju — podsjetnik nije potreban.
                   </p>
                 )}

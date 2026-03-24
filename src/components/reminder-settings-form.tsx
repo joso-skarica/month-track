@@ -209,13 +209,10 @@ export function ReminderSettingsForm({ settings }: Props) {
             />
             <p
               id="overdue_threshold_day_help"
-              className="text-xs text-muted-foreground leading-snug"
+              className="text-[11px] text-muted-foreground/80 leading-snug"
             >
-              Nepotpuni tekući mjesec na dashboardu označit će se kao zakašnjelo
-              nakon kraja ovog dana u sljedećem kalendarskom mjesecu (npr.{' '}
-              {OVERDUE_THRESHOLD_DAY_MIN}–{OVERDUE_THRESHOLD_DAY_MAX}: veljača za
-              siječanj). Koristi se samo za prikaz; ograničenje do 28. izbjegava
-              probleme s kratkim mjesecima.
+              Nakon ovog dana u sljedećem mjesecu, nepotpuna razdoblja prikazuju
+              se kao zakašnjela ({OVERDUE_THRESHOLD_DAY_MIN}–{OVERDUE_THRESHOLD_DAY_MAX}).
             </p>
           </div>
           </div>

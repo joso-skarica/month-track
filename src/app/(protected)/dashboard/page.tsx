@@ -154,12 +154,12 @@ export default async function DashboardPage() {
   ] as const;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground">
           Dashboard
         </h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground">
           Pregled za{' '}
           <span className="font-medium text-foreground/90">{monthLabel}</span>
           {overdue ? (
@@ -200,14 +200,14 @@ export default async function DashboardPage() {
         })}
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <h2 className="text-lg font-semibold tracking-tight text-foreground">
           Klijenti — {monthLabel}
         </h2>
 
         {periods.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border/90 bg-card/80 py-10 text-center shadow-sm">
-            <p className="text-sm font-medium text-foreground/80">
+          <div className="rounded-xl border border-dashed border-border/90 bg-card/80 py-8 text-center shadow-sm">
+            <p className="text-sm font-medium text-foreground/70">
               Nema otvorenih mjeseci za {monthLabel}.
             </p>
             <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
