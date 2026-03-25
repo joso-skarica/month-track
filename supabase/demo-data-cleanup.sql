@@ -36,6 +36,12 @@ from (
       'Obrt Peric',
       'Ivan Peric',
       'ivan.peric@example.com'
+    ),
+    (
+      'Nova Firma 2026',
+      'Stolarija Vlahović d.o.o.',
+      'Damir Vlahović',
+      'damir.vlahovic@example.com'
     )
 ) as v(old_company_name, new_company_name, new_contact_person, new_email)
 where lower(trim(c.company_name)) = lower(v.old_company_name);

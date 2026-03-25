@@ -30,7 +30,7 @@ const TEMPLATE_VARS = [
 ] as const;
 
 const templateVarChipClass =
-  'inline-flex shrink-0 items-center rounded border border-border/45 bg-background/80 px-1.5 py-px font-mono text-[10px] font-normal tracking-tight text-muted-foreground/80';
+  'inline-flex shrink-0 items-center rounded-full border border-border/30 bg-muted/35 px-2 py-0.5 font-mono text-[10px] font-normal tracking-tight text-muted-foreground/75';
 
 function TemplateVarChip({
   token,
@@ -49,11 +49,13 @@ function TemplateVarChip({
 function TemplateVariablesHint() {
   return (
     <div
-      className="mt-2 rounded-md border border-border/40 bg-muted/10 px-3 py-2"
+      className="mt-2 rounded-md border border-dashed border-border/50 bg-muted/5 px-3 py-2.5"
       role="note"
     >
-      <p className="mb-1.5 text-[10px] leading-snug text-muted-foreground/70 sm:text-[11px]">
-        Možete koristiti ove oznake u predmetu i tekstu poruke:
+      <p className="mb-2 text-[10px] leading-relaxed text-muted-foreground/75 sm:text-[11px]">
+        U predmet i tekst poruke možete umetnuti podatke o klijentu i razdoblju.
+        Kopirajte točno jedan od sljedećih predložaka (ne mijenjajte tekst unutar
+        vitičastih zagrada):
       </p>
       <div className="flex flex-wrap gap-1.5">
         {TEMPLATE_VARS.map((v) => (
@@ -401,10 +403,10 @@ export function ReminderSettingsForm({ settings }: Props) {
               placeholder={"S poštovanjem,\nVaš računovodstveni ured"}
               className={`${textareaBase} min-h-[3.5rem]`}
             />
-            <p className="text-[10px] leading-snug text-muted-foreground/70 sm:text-[11px]">
-              U predlošcima se umeće oznakom{' '}
+            <p className="text-[10px] leading-relaxed text-muted-foreground/75 sm:text-[11px]">
+              Potpis se u predlošku pojavljuje na mjestu oznake{' '}
               <TemplateVarChip token="{{firm_signature}}" title="Potpis" />
-              . Ako je polje prazno, koristi se &quot;Month-Track&quot;.
+              . Ako ostavite prazno, u poruci će se pojaviti „Month-Track”.
             </p>
           </div>
           </div>

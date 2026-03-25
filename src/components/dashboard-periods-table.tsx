@@ -194,17 +194,18 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-4 rounded-xl border border-border/90 bg-card p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+        <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+          <div className="-mx-1 flex min-w-0 flex-nowrap gap-3 overflow-x-auto px-1 pb-0.5 sm:flex-wrap sm:overflow-visible sm:pb-0">
           <Input
             placeholder="Pretraži po nazivu ili OIB-u..."
-            aria-label="Pretraži klijente na dashboardu"
+            aria-label="Pretraži klijente na nadzornoj ploči"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="max-w-xs"
+            className="min-w-[11rem] max-w-xs shrink-0 sm:min-w-0"
           />
           <Select value={typeFilter} onValueChange={setTypeFilter}>
             <SelectTrigger
-              className="w-44"
+              className="w-44 shrink-0"
               aria-label="Filtriraj po tipu klijenta"
             >
               <SelectValue />
@@ -219,7 +220,7 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-44" aria-label="Filtriraj po statusu">
+            <SelectTrigger className="w-44 shrink-0" aria-label="Filtriraj po statusu">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -228,6 +229,7 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
               <SelectItem value="ready">Spremno</SelectItem>
             </SelectContent>
           </Select>
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Button

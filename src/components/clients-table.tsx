@@ -47,16 +47,16 @@ export function ClientsTable({ clients }: { clients: Client[] }) {
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-4 rounded-xl border border-border/90 bg-card p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-1 gap-3">
+        <div className="flex min-w-0 flex-1 flex-nowrap gap-3 overflow-x-auto pb-0.5 sm:flex-wrap sm:overflow-visible sm:pb-0">
           <Input
             placeholder="Pretraži po nazivu ili OIB-u..."
             aria-label="Pretraži klijente"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="max-w-xs"
+            className="min-w-[11rem] max-w-xs shrink-0 sm:min-w-0"
           />
           <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-44" aria-label="Filtriraj po tipu klijenta">
+            <SelectTrigger className="w-44 shrink-0" aria-label="Filtriraj po tipu klijenta">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

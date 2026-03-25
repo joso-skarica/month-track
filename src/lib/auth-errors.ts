@@ -23,6 +23,10 @@ export function croatianAuthErrorMessage(raw: string): string {
       'Previše pokušaja. Pričekajte trenutak pa pokušajte ponovo.',
     'For security purposes, you can only request this after':
       'Pričekajte trenutak prije novog pokušaja.',
+    'Signups not allowed for this instance':
+      'Registracija novih računa trenutno nije omogućena.',
+    'Email signups are disabled':
+      'Registracija putem e-pošte trenutno nije omogućena.',
   };
 
   if (exact[m]) return exact[m];
@@ -44,6 +48,12 @@ export function croatianAuthErrorMessage(raw: string): string {
   }
   if (lower.includes('rate limit') || lower.includes('too many')) {
     return 'Previše pokušaja. Pričekajte trenutak pa pokušajte ponovo.';
+  }
+  if (lower.includes('signup') && lower.includes('not allowed')) {
+    return 'Registracija novih računa trenutno nije omogućena.';
+  }
+  if (lower.includes('weak') && lower.includes('password')) {
+    return 'Lozinka je preslaba. Koristite jaču lozinku (npr. više znakova i miješane vrste znakova).';
   }
 
   return 'Nešto je pošlo po krivu. Pokušajte ponovo.';

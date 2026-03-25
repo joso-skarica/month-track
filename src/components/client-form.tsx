@@ -206,15 +206,22 @@ export function ClientForm({ documentTypes, initialData }: Props) {
             />
           </div>
 
-          <div className="flex items-center gap-2 sm:col-span-2">
-            <Checkbox
-              id="is_active"
-              checked={isActive}
-              onCheckedChange={(checked) => setIsActive(checked === true)}
-            />
-            <Label htmlFor="is_active" className="cursor-pointer">
-              Aktivan klijent
-            </Label>
+          <div className="flex flex-col gap-2 sm:col-span-2">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="is_active"
+                checked={isActive}
+                onCheckedChange={(checked) => setIsActive(checked === true)}
+              />
+              <Label htmlFor="is_active" className="cursor-pointer font-medium">
+                Aktivan klijent
+              </Label>
+            </div>
+            <p className="text-[11px] leading-relaxed text-muted-foreground sm:pl-6">
+              Klijenti se u sustavu ne brišu kako bi ostala povijest mjeseci i
+              podsjetnika. Isključite aktivnost ako suradnja prestaje — klijent
+              će biti označen kao neaktivan.
+            </p>
           </div>
         </div>
 

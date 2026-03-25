@@ -5,6 +5,12 @@
 -- =============================================================================
 -- 1. If needed, change v_demo_user_id in the DO block to match your Supabase user.
 -- 2. Run the whole script (BEGIN … COMMIT).
+--
+-- Snimke zaslona (nadzorna ploča / mjesec / klijenti / postavke):
+--   • Nepotpuno + nedostajući dokumenti (npr. Marinović, Petrović).
+--   • Nepotpuno + 0 nedostaje — Jadranski Vrtovi (svi dokumenti pregledani/zaprimljeni).
+--   • Spremno (Udruga Zeleni Krug, Obrt Baković).
+--   • Zadnji podsjetnik s datumom; povijest: prvi + naknadni tip.
 -- =============================================================================
 
 begin;
@@ -128,10 +134,10 @@ begin
     ('b1000000-0000-0000-0000-000000000001', v_dt_obracun, 'missing'),
     ('b1000000-0000-0000-0000-000000000001', v_dt_joppd, 'missing'),
     ('b1000000-0000-0000-0000-000000000001', v_dt_pdv, 'missing'),
-    ('b1000000-0000-0000-0000-000000000002', v_dt_ulazni, 'missing'),
-    ('b1000000-0000-0000-0000-000000000002', v_dt_izlazni, 'missing'),
-    ('b1000000-0000-0000-0000-000000000002', v_dt_izvod, 'missing'),
-    ('b1000000-0000-0000-0000-000000000002', v_dt_pdv, 'missing'),
+    ('b1000000-0000-0000-0000-000000000002', v_dt_ulazni, 'reviewed'),
+    ('b1000000-0000-0000-0000-000000000002', v_dt_izlazni, 'reviewed'),
+    ('b1000000-0000-0000-0000-000000000002', v_dt_izvod, 'reviewed'),
+    ('b1000000-0000-0000-0000-000000000002', v_dt_pdv, 'reviewed'),
     ('b1000000-0000-0000-0000-000000000003', v_dt_ulazni, 'reviewed'),
     ('b1000000-0000-0000-0000-000000000003', v_dt_izlazni, 'reviewed'),
     ('b1000000-0000-0000-0000-000000000003', v_dt_izvod, 'received'),

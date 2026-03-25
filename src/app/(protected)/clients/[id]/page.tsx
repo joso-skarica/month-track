@@ -123,6 +123,12 @@ export default async function ClientDetailPage({
                 </dd>
               </div>
             </dl>
+            <p className="mt-4 border-t border-border/70 pt-3 text-[11px] leading-relaxed text-muted-foreground">
+              Klijenti se ne brišu kako bi se sačuvala povijest mjeseci i
+              podsjetnika. Umjesto toga, mogu se{' '}
+              <span className="font-medium text-foreground/80">deaktivirati</span>
+              .
+            </p>
           </CardContent>
         </Card>
 
