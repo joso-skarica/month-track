@@ -50,8 +50,8 @@ export default async function MonthPage({
   const monthLabel = formatCroatianMonth(period.month, period.year);
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-xl border border-border/90 bg-card p-5 shadow-sm sm:p-6">
+    <div className="space-y-5">
+      <div className="rounded-xl border border-border/90 bg-card p-4 shadow-sm sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">

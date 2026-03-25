@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const links = [
-  { href: '/dashboard', label: 'Dashboard' },
+  { href: '/dashboard', label: 'Nadzorna ploča' },
   { href: '/clients', label: 'Klijenti' },
   { href: '/settings/reminders', label: 'Postavke' },
 ] as const;
@@ -25,8 +25,8 @@ export function Nav() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/90 bg-card/95 shadow-sm backdrop-blur-sm supports-[backdrop-filter]:bg-card/90 print:hidden">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
-        <div className="flex items-center gap-6">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-2.5 sm:min-h-14 sm:flex-nowrap sm:gap-0 sm:px-6 sm:py-0">
+        <div className="flex min-w-0 flex-wrap items-center gap-4 sm:gap-6">
           <Logo size="sm" />
           <nav className="flex items-center gap-0.5">
             {links.map((link) => (
@@ -45,7 +45,7 @@ export function Nav() {
             ))}
           </nav>
         </div>
-        <Button variant="outline" size="sm" className="font-medium" onClick={handleLogout}>
+        <Button variant="outline" size="sm" className="shrink-0 font-medium" onClick={handleLogout}>
           Odjava
         </Button>
       </div>

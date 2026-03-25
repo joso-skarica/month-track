@@ -28,8 +28,8 @@ const STATUS_LABELS: Record<DocumentStatus, string> = {
 
 const REMINDER_TYPE_LABELS: Record<ReminderType, string> = {
   manual: 'Ručni',
-  first: 'Prvi',
-  follow_up: 'Follow-up',
+  first: 'Prvi automatski',
+  follow_up: 'Naknadni',
   final: 'Završni',
 };
 

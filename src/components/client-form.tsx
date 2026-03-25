@@ -174,7 +174,7 @@ export function ClientForm({ documentTypes, initialData }: Props) {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email">Email *</Label>
+            <Label htmlFor="email">E-pošta *</Label>
             <Input
               id="email"
               type="email"

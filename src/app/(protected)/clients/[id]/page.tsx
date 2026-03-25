@@ -105,7 +105,7 @@ export default async function ClientDetailPage({
                 <dd>{client.contact_person || '—'}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-muted-foreground">Email</dt>
+                <dt className="text-muted-foreground">E-pošta</dt>
                 <dd>{client.email}</dd>
               </div>
               <div className="flex justify-between">

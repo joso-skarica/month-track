@@ -118,7 +118,7 @@ export function ClientsTable({ clients }: { clients: Client[] }) {
                   <TableHead>OIB</TableHead>
                   <TableHead>Tip</TableHead>
                   <TableHead>Kontakt osoba</TableHead>
-                  <TableHead>Email</TableHead>
+                  <TableHead className="min-w-[10rem]">E-pošta</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>

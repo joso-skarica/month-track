@@ -58,8 +58,8 @@ const STATUS_OPTIONS: { value: DocumentStatus; label: string }[] = [
 
 const REMINDER_TYPE_LABELS: Record<string, string> = {
   manual: 'Ručni',
-  first: 'Prvi',
-  follow_up: 'Follow-up',
+  first: 'Prvi automatski',
+  follow_up: 'Naknadni',
   final: 'Završni',
 };
 
@@ -359,7 +359,7 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
             Povijest podsjetnika
           </h3>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Zapis poslanih e-poruka za ovaj mjesec
+            Primatelj, vrsta i vrijeme slanja
           </p>
         </div>
         <div className="p-0">

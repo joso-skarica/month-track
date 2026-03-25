@@ -55,7 +55,7 @@ export async function updateReminderSettings(
 
   for (const [label, n] of [
     ['Prvi podsjetnik', firstOff],
-    ['Follow-up', followOff],
+    ['Naknadni podsjetnik', followOff],
     ['Završni podsjetnik', finalOff],
   ] as const) {
     if (
@@ -72,7 +72,7 @@ export async function updateReminderSettings(
     return {
       success: false,
       error:
-        'Redoslijed dana mora biti: prvi ≤ follow-up ≤ završni (u sljedećem mjesecu nakon razdoblja).',
+        'Redoslijed dana mora biti: prvi ≤ naknadni ≤ završni (u sljedećem mjesecu nakon razdoblja).',
     };
   }
 

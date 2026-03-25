@@ -158,7 +158,7 @@ export function ReminderSettingsForm({ settings }: Props) {
     }
     if (firstParsed > followParsed || followParsed > finalParsed) {
       setError(
-        'Redoslijed dana mora biti: prvi ≤ follow-up ≤ završni (u sljedećem mjesecu nakon razdoblja).',
+        'Redoslijed dana mora biti: prvi ≤ naknadni ≤ završni (u sljedećem mjesecu nakon razdoblja).',
       );
       return;
     }
@@ -247,7 +247,7 @@ export function ReminderSettingsForm({ settings }: Props) {
             <p className="mt-1 text-xs text-muted-foreground">
               Dani u kalendarskom mjesecu odmah nakon razdoblja (nakon kraja tog
               dana šalje se e-pošta, ako mjesec još nije potpun i ima nedostajućih
-              dokumenata). Završni korak koristi isti predložak kao follow-up.
+              dokumenata). Završni korak koristi isti predložak kao naknadni podsjetnik.
             </p>
           </div>
           <div className="space-y-4 px-5 py-4">
@@ -275,7 +275,7 @@ export function ReminderSettingsForm({ settings }: Props) {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="follow_up_reminder_offset">Follow-up (dan)</Label>
+                <Label htmlFor="follow_up_reminder_offset">Naknadni (dan)</Label>
                 <Input
                   id="follow_up_reminder_offset"
                   type="number"
@@ -354,10 +354,10 @@ export function ReminderSettingsForm({ settings }: Props) {
         <div className="mt-5 overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
           <div className="border-b border-border/80 bg-slate-50/60 px-5 py-3">
             <h3 className="text-sm font-semibold text-foreground">
-              4. Predložak follow-up podsjetnika
+              4. Predložak naknadnog podsjetnika
             </h3>
             <p className="mt-0.5 text-[11px] text-muted-foreground">
-              Koristi se za ponovljene i završne podsjetnike
+              Za ponovljene i završne automatske podsjetnike
             </p>
           </div>
           <div className="space-y-3 px-5 py-3.5">

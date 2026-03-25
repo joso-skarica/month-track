@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { croatianAuthErrorMessage } from '@/lib/auth-errors';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,11 +34,7 @@ export default function LoginPage() {
         password,
       });
       if (error) {
-        setError(
-          error.message === 'Invalid login credentials'
-            ? 'Neispravna email adresa ili lozinka.'
-            : error.message,
-        );
+        setError(croatianAuthErrorMessage(error.message));
         setLoading(false);
         return;
       }
@@ -48,17 +45,17 @@ export default function LoginPage() {
         password,
       });
       if (error) {
-        setError(error.message);
+        setError(croatianAuthErrorMessage(error.message));
         setLoading(false);
         return;
       }
-      setMessage('Provjerite svoj email za potvrdu računa.');
+      setMessage('Provjerite pristiglu poruku na adresi e-pošte za potvrdu računa.');
       setLoading(false);
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8 sm:py-10">
       <div className="w-full max-w-sm rounded-xl border border-border/90 bg-card p-8 shadow-sm">
         <div className="mb-7 flex flex-col items-center gap-3 text-center">
           <Logo size="lg" />
@@ -71,7 +68,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Adresa e-pošte</Label>
             <Input
               id="email"
               type="email"

@@ -157,9 +157,9 @@ export default async function DashboardPage() {
     <div className="space-y-5">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          Dashboard
+          Nadzorna ploča
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
           Pregled za{' '}
           <span className="font-medium text-foreground/90">{monthLabel}</span>
           {overdue ? (
