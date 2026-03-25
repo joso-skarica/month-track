@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/select';
 import {
   Table,
+  TableScrollHint,
   TableBody,
   TableCell,
   TableHead,
@@ -110,6 +111,7 @@ export function ClientsTable({ clients }: { clients: Client[] }) {
         </div>
       ) : (
         <>
+          <TableScrollHint />
           <div className="overflow-hidden rounded-xl border border-border/90 bg-card shadow-sm">
             <Table>
               <TableHeader>

@@ -4,6 +4,14 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+function TableScrollHint() {
+  return (
+    <p className="mb-1.5 text-[10px] text-muted-foreground/60 sm:hidden">
+      Povucite vodoravno za dodatne stupce.
+    </p>
+  )
+}
+
 function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div
@@ -109,6 +117,7 @@ function TableCaption({
 
 export {
   Table,
+  TableScrollHint,
   TableHeader,
   TableBody,
   TableFooter,

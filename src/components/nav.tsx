@@ -15,13 +15,13 @@ const links = [
 
 function navLinkClass(active: boolean, compact: boolean) {
   return cn(
-    'rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40',
+    'rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40',
     compact
       ? 'flex-1 px-2 py-2 text-center text-[11px] leading-tight'
-      : 'px-3 py-2 text-sm',
+      : 'px-3.5 py-2 text-sm',
     active
-      ? 'bg-blue-50 text-blue-900'
-      : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
+      ? 'bg-blue-50/80 text-blue-900'
+      : 'text-muted-foreground/80 hover:bg-muted/60 hover:text-foreground',
   );
 }
 
@@ -89,7 +89,7 @@ export function Nav() {
         <div className="hidden min-h-14 items-center justify-between sm:flex">
           <div className="flex min-w-0 items-center gap-6">
             <Logo size="sm" />
-            <nav className="flex items-center gap-0.5" aria-label="Glavna navigacija">
+            <nav className="flex items-center gap-1" aria-label="Glavna navigacija">
               {linkItems}
             </nav>
           </div>
