@@ -1,6 +1,6 @@
 # Month-Track
 
-B2B web application for Croatian accounting firms to track monthly client documents, month-end readiness, and reminder communication.
+Workflow app for Croatian accounting firms to track missing monthly client documents, reminders, and month-end readiness.
 
 ## Overview
 
@@ -95,30 +95,30 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Static previews (paths relative to repository root).
 
-**Prijava** — autentifikacija i ulaz u aplikaciju.
+**Prijava** — ulaz u aplikaciju i autentifikacija
 
 ![Prijava](public/screenshots/login.png)
 
-**Nadzorna ploča** — pregled razdoblja i statusa po klijentima.
+**Nadzorna ploča** — pregled statusa po klijentima i mjesecima
 
 ![Nadzorna ploča](public/screenshots/dashboard.png)
 
-**Klijenti** — popis klijenata i filtri.
+**Klijenti** — popis klijenata i filtri
 
 ![Klijenti](public/screenshots/clients.png)
 
-**Detalji klijenta** — podaci i pristup mjesecima.
+**Detalji klijenta** — podaci o klijentu i pristup mjesecima
 
 ![Detalji klijenta](public/screenshots/client-detail.png)
 
-**Kontrolna lista mjeseca** — dokumenti, statusi i radnje.
+**Kontrolna lista mjeseca** — praćenje dokumenata, statusa i radnji
 
 ![Kontrolna lista mjeseca](public/screenshots/month-checklist.png)
 
-**Postavke podsjetnika** — predlošci i pravila podsjetnika.
+**Postavke podsjetnika** — predlošci i pravila podsjetnika
 
 ![Postavke podsjetnika](public/screenshots/reminder-settings.png)
 
-**Sažetak** — pregled za ispis ili pregled mjeseca.
+**Sažetak** — pregled mjeseca za ispis i internu provjeru
 
 ![Sažetak](public/screenshots/summary.png)
