@@ -6,7 +6,7 @@ Workflow app for Croatian accounting firms to track missing monthly client docum
 
 Month-Track helps accounting offices see which monthly documents each client still owes, coordinate follow-up before deadlines, and keep a clear record of month-by-month status. It is built for **accountants and office staff** who manage many clients and recurring monthly obligations—not for end clients directly.
 
-The product solves the operational gap between “we know what we need each month” and “we know exactly what is missing right now, for which client, and whether we already reminded them.”
+The product closes the operational gap between knowing what should arrive each month and knowing exactly what is still missing, for which client, and whether follow-up has already happened.
 
 ## Core features
 
