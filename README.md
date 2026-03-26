@@ -1,68 +1,69 @@
 # Month-Track
 
-Document tracking and reminder management for Croatian accounting firms.
+B2B web application for Croatian accounting firms to track monthly client documents, month-end readiness, and reminder communication.
 
 ## Overview
 
-Month-Track is a B2B web application built for accounting offices in Croatia. It addresses a common operational problem: tracking which monthly documents each client has submitted, which are still missing, and coordinating follow-up when deadlines approach.
+Month-Track helps accounting offices see which monthly documents each client still owes, coordinate follow-up before deadlines, and keep a clear record of month-by-month status. It is built for **accountants and office staff** who manage many clients and recurring monthly obligations—not for end clients directly.
 
-The application gives accountants a structured workflow — from onboarding clients and defining their required documents, through month-by-month status tracking, to sending reminder emails and marking months as complete. A central dashboard provides an at-a-glance view of the current period across all clients.
+The product solves the operational gap between “we know what we need each month” and “we know exactly what is missing right now, for which client, and whether we already reminded them.”
 
-## Core Features
+## Core features
 
-- **Authentication and protected routes** — Supabase Auth with email/password and magic link login. All application routes require authentication.
-- **Client management** — Create, edit, and deactivate clients. Each client record includes company name, OIB, contact details, and client type.
-- **Croatia-specific client presets** — Built-in client type categories (paušalni obrt, obrt, d.o.o., udruga) with corresponding default document requirements.
-- **Lazy month creation** — Monthly periods are created on demand when a user opens a specific month for a client, not generated in bulk.
-- **Monthly document checklist** — Per-client, per-month tracking of individual document statuses (missing, received, reviewed) with optional notes.
-- **Mark month ready** — When all documents are accounted for, the month can be marked as complete.
-- **Dashboard overview** — Summary statistics and a filterable table of all client-month rows for the current period, with status badges and overdue indicators.
-- **Single and bulk reminders** — Send email reminders for individual client-months or select multiple rows on the dashboard and send in bulk. Reminders use configurable templates, log each send, and update the last-reminder timestamp.
-- **Month history and navigation** — Browse a client's past months, open any month by year/month picker, and navigate between adjacent months with previous/next controls.
-- **Configurable overdue threshold** — Per-user setting (1–28) that controls which day of the following month triggers the overdue badge on the dashboard. Defaults to the 10th.
-- **Croatian auth email templates** — Production-ready Croatian copy for signup confirmation, magic link, and password reset emails.
+- **Authentication and protected routes** — Email/password sign-in via Supabase Auth; application routes are protected; session handling with middleware.
+- **Client management** — Create, edit, and deactivate clients (history is preserved); company details, OIB, contacts, and activity state.
+- **Croatia-specific client presets** — Client types aligned with common Croatian practice (e.g. paušalni obrt, obrt, d.o.o., udruga) with sensible default document expectations.
+- **Lazy month creation** — A client-month is created when opened, not pre-generated for all periods.
+- **Monthly document checklist** — Per month, per client: document rows with status (e.g. missing, received, reviewed) and notes.
+- **Month ready / incomplete workflow** — Incomplete months with missing items stay visible as such; when everything is in order, the month can be marked ready.
+- **Dashboard overview** — Current-period view across clients: filters, search, status and overdue cues, row-level context for missing documents and last reminder.
+- **Single and bulk reminders** — Send reminder emails from a client-month or select multiple rows on the dashboard; configurable templates; sends are logged and last-reminder timestamps updated.
+- **Automatic reminder scheduling** — Configurable day-offset rules for first, follow-up, and final automated reminders for incomplete months with missing documents (logic is server-side; can be triggered manually or by a job later).
+- **Month history and navigation** — Browse a client’s months; open by period; previous/next navigation between adjacent months.
+- **Configurable overdue threshold** — User setting (day of the following month, 1–28) for when a client-month is treated as overdue on the dashboard (default aligned with common office practice).
+- **Printable monthly summary** — Printable view of the monthly situation for review or filing.
+- **Croatian auth email templates** — Supabase auth flows use Croatian-oriented copy for confirmation, magic link, and recovery where applicable.
 
-## Tech Stack
+## Tech stack
 
-| Layer          | Technology                          |
-| -------------- | ----------------------------------- |
-| Framework      | Next.js 16 (App Router)             |
-| Language       | TypeScript                          |
-| Styling        | Tailwind CSS 4                      |
-| Components     | shadcn/ui + Radix UI                |
-| Auth & DB      | Supabase (Auth + PostgreSQL + RLS)  |
-| Email          | Resend                              |
-| Deployment     | Railway                             |
+| Layer | Technology |
+| --- | --- |
+| Framework | Next.js (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| UI | shadcn/ui (Radix primitives) |
+| Auth & database | Supabase (Auth, PostgreSQL, RLS) |
+| Transactional email | Resend |
+| Hosting | Railway |
 
-## How It Works
+## Workflow
 
-1. An accountant creates a client and selects which document types that client must submit each month.
-2. When a new month begins (or at any time), the accountant opens that month for the client. This creates the monthly period and seeds the document checklist based on the client's requirements.
-3. As documents arrive, the accountant updates each document's status — from missing to received to reviewed — and optionally adds notes.
-4. If documents are still outstanding, the accountant sends a reminder email (individually or in bulk from the dashboard). The email uses configurable templates and lists the specific missing documents.
-5. Once all documents are accounted for, the month is marked as ready.
-6. The dashboard provides a real-time view of the current month across all clients, with overdue indicators, filter/search, and bulk actions.
+1. An **accountant creates a client** and selects which document types that client must submit each month.
+2. The user **opens a month** for that client; the period and checklist rows are created as needed.
+3. **Document statuses** are updated as mail arrives (missing → received → reviewed), with optional notes.
+4. **Reminders** are sent from the month screen or in bulk from the dashboard when documents are still missing; templates and firm details are configured under settings.
+5. The **dashboard** is used to monitor the current period across all clients, filter, and act on rows that need attention.
+6. When everything required is accounted for, the user **marks the month as ready**.
+7. **Summary** supports a printable monthly overview; **settings** cover reminders, overdue threshold, and automatic reminder rules.
 
 ## Deployment
 
-The application is deployed on [Railway](https://railway.com). Authentication and the PostgreSQL database are hosted on [Supabase](https://supabase.com). Reminder emails are sent via [Resend](https://resend.com).
+The app runs on **Railway**. **Supabase** provides authentication and the PostgreSQL database (with row-level security). **Resend** delivers application emails including reminders.
 
-Email sending currently operates in sandbox/testing mode. To send reminders to real client email addresses, a verified sending domain must be configured in the Resend dashboard.
+Sending reminders to **arbitrary client addresses in production** requires a **verified sender or domain** in Resend (and appropriate DNS). Until that is configured, delivery may be limited to test/sandbox behaviour depending on your Resend project settings.
 
-## Local Development
+## Local development
 
 ```bash
-git clone <repository-url>
-cd month-track
 npm install
 ```
 
-Create a `.env.local` file in the project root:
+Create `.env.local` in the project root:
 
-```
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-RESEND_API_KEY=your_resend_api_key
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+RESEND_API_KEY=
 ```
 
 Start the development server:
@@ -71,21 +72,53 @@ Start the development server:
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Current Status
+## Current status
 
-**V1.1** — Operational prototype. The application is deployed, functional, and covers the complete document tracking and reminder workflow. Currently a private repository.
+**Month-Track v2.2** — Deployed and working end-to-end for the accountant workflow described above. **Repository is private.**
 
 ## Roadmap
 
-- Configure a production sender domain for reminder emails.
-- Collect real-user feedback from accounting firms.
-- Optional monthly export/reporting.
-- Further workflow refinement based on usage patterns.
+- Incorporate feedback from practicing accountants.
+- Stronger workflow refinement (status rules, bulk operations, reporting) based on real use.
+- Optional future **client portal** (uploads, self-service) if product direction supports it.
+- Production **sender/domain** setup on Resend for unrestricted reminder delivery.
 
 ## Notes
 
-- This is a Croatia-only V1. The UI, document types, client categories, and all user-facing copy are in Croatian.
-- The current version implements the accountant-side workflow only. There is no client-facing portal.
-- No OCR, XML parsing, or third-party accounting system integrations are included in this version.
+- **Croatia-focused** in this version: UI copy, document concepts, and defaults reflect that context.
+- **Accountant-side product**; clients do not log into Month-Track in the current version.
+- **No OCR**, **no XML parsing**, and **no third-party accounting system integrations** in scope today.
+
+## Screenshots
+
+Static previews (paths relative to repository root).
+
+**Prijava** — autentifikacija i ulaz u aplikaciju.
+
+![Prijava](public/screenshots/login.png)
+
+**Nadzorna ploča** — pregled razdoblja i statusa po klijentima.
+
+![Nadzorna ploča](public/screenshots/dashboard.png)
+
+**Klijenti** — popis klijenata i filtri.
+
+![Klijenti](public/screenshots/clients.png)
+
+**Detalji klijenta** — podaci i pristup mjesecima.
+
+![Detalji klijenta](public/screenshots/client-detail.png)
+
+**Kontrolna lista mjeseca** — dokumenti, statusi i radnje.
+
+![Kontrolna lista mjeseca](public/screenshots/month-checklist.png)
+
+**Postavke podsjetnika** — predlošci i pravila podsjetnika.
+
+![Postavke podsjetnika](public/screenshots/reminder-settings.png)
+
+**Sažetak** — pregled za ispis ili pregled mjeseca.
+
+![Sažetak](public/screenshots/summary.png)
