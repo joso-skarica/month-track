@@ -17,7 +17,7 @@ type SendResult =
 export async function sendEmail(params: SendEmailParams): Promise<SendResult> {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Month-Track <onboarding@resend.dev>',
+      from: process.env.EMAIL_FROM ?? 'Month-Track <onboarding@resend.dev>',
       to: params.to,
       subject: params.subject,
       text: params.text,
