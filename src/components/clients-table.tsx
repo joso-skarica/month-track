@@ -76,13 +76,13 @@ export function ClientsTable({ clients }: { clients: Client[] }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-8 text-center shadow-sm">
+        <div className="rounded-xl border border-dashed border-border bg-card/60 py-10 text-center">
           {clients.length === 0 ? (
             <>
               <p className="text-sm font-medium text-foreground/70">
                 Nemate još klijenata.
               </p>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1.5 text-sm text-muted-foreground">
                 Dodajte prvog klijenta da biste započeli praćenje dokumentacije.
               </p>
               <Button asChild className="mt-4">

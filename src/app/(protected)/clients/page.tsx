@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { ClientsTable } from '@/components/clients-table';
+import { PageHeader } from '@/components/page-header';
 import type { Client } from '@/types/db';
 
 export default async function ClientsPage() {
@@ -13,14 +14,11 @@ export default async function ClientsPage() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          Klijenti
-        </h1>
-        <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          Upravljanje klijentima i njihovim dokumentacijskim zahtjevima.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Upravljanje"
+        title="Klijenti"
+        subtitle="Upravljanje klijentima i njihovim dokumentacijskim zahtjevima."
+      />
       <ClientsTable clients={clients ?? []} />
     </div>
   );

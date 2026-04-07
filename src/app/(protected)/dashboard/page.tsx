@@ -17,6 +17,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/page-header';
 import { DashboardPeriodsTable } from '@/components/dashboard-periods-table';
 
 export default async function DashboardPage() {
@@ -120,6 +121,8 @@ export default async function DashboardPage() {
       icon: Users,
       iconClass: 'text-slate-500',
       valueClass: 'text-foreground',
+      cardClass: '',
+      detail: null as string | null,
     },
     {
       label: 'Nepotpuno',
@@ -128,6 +131,8 @@ export default async function DashboardPage() {
       iconClass: 'text-amber-600',
       valueClass:
         incompleteCount > 0 ? 'text-amber-900' : 'text-muted-foreground',
+      cardClass: incompleteCount > 0 ? 'border-amber-200/70' : '',
+      detail: null as string | null,
     },
     {
       label: 'Spremno',
@@ -135,6 +140,8 @@ export default async function DashboardPage() {
       icon: CheckCircle2,
       iconClass: 'text-emerald-600',
       valueClass: readyCount > 0 ? 'text-emerald-900' : 'text-muted-foreground',
+      cardClass: readyCount > 0 ? 'border-emerald-200/70' : '',
+      detail: null as string | null,
     },
     {
       label: 'Zakašnjelo',
@@ -143,6 +150,8 @@ export default async function DashboardPage() {
       iconClass: 'text-red-600',
       valueClass:
         overdueCount > 0 ? 'text-red-800' : 'text-muted-foreground',
+      cardClass: overdueCount > 0 ? 'border-red-200/70' : '',
+      detail: overdueCount > 0 ? `rok: ${overdueThresholdDay}. u mjesecu` : null,
     },
     {
       label: 'Podsjetnika',
@@ -150,32 +159,34 @@ export default async function DashboardPage() {
       icon: Mail,
       iconClass: 'text-blue-600',
       valueClass: 'text-foreground',
+      cardClass: '',
+      detail: null as string | null,
     },
-  ] as const;
+  ];
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          Nadzorna ploča
-        </h1>
-        <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-          Pregled za{' '}
-          <span className="font-medium text-foreground/90">{monthLabel}</span>
-          {overdue ? (
-            <span className="text-red-700">
-              {' '}
-              · rok za nepotpune mjesece je prošao
-            </span>
-          ) : null}
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Pregled"
+        title="Nadzorna ploča"
+        subtitle={
+          <p>
+            Tekuće razdoblje:{' '}
+            <span className="font-medium text-foreground/90">{monthLabel}</span>
+            {overdue ? (
+              <span className="ml-2 inline-block rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-800">
+                rok za nepotpune mjesece je prošao
+              </span>
+            ) : null}
+          </p>
+        }
+      />
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.label} size="sm" className="shadow-sm">
+            <Card key={stat.label} size="sm" className={cn('shadow-sm', stat.cardClass)}>
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
                 <CardTitle className="text-xs font-medium leading-tight text-muted-foreground">
                   {stat.label}
@@ -194,6 +205,11 @@ export default async function DashboardPage() {
                 >
                   {stat.value}
                 </p>
+                {stat.detail && (
+                  <p className="mt-1 text-[10px] text-muted-foreground">
+                    {stat.detail}
+                  </p>
+                )}
               </CardContent>
             </Card>
           );
@@ -206,7 +222,7 @@ export default async function DashboardPage() {
         </h2>
 
         {periods.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border/90 bg-card/80 py-8 text-center shadow-sm">
+          <div className="rounded-xl border border-dashed border-border bg-card/60 py-10 text-center">
             <p className="text-sm font-medium text-foreground/70">
               Nema otvorenih mjeseci za {monthLabel}.
             </p>

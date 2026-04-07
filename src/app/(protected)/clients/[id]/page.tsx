@@ -1,10 +1,13 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { FileText } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentPeriod, formatCroatianMonth } from '@/lib/utils/months';
 import { CLIENT_TYPES } from '@/lib/constants/client-presets';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { PageHeader } from '@/components/page-header';
 import { OpenMonthButton } from '@/components/open-month-button';
 import { ClientOpenMonthPicker } from '@/components/client-open-month-picker';
 import {
@@ -68,28 +71,31 @@ export default async function ClientDetailPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-            {client.company_name}
-          </h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">
+      <PageHeader
+        eyebrow="Klijent"
+        title={client.company_name}
+        subtitle={
+          <p>
             OIB:{' '}
             <span className="font-mono tabular-nums text-foreground/90">
               {client.oib}
             </span>
+            <span className="text-border"> · </span>
+            {typeLabel}
           </p>
-        </div>
-        <div className="flex shrink-0 flex-wrap gap-2">
-          <Button asChild variant="outline" size="sm">
-            <Link href={`/clients/${client.id}/edit`}>Uredi klijenta</Link>
-          </Button>
-          <OpenMonthButton clientId={client.id} />
-        </div>
-      </div>
+        }
+        actions={
+          <>
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/clients/${client.id}/edit`}>Uredi klijenta</Link>
+            </Button>
+            <OpenMonthButton clientId={client.id} />
+          </>
+        }
+      />
 
       <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
-        <Card>
+        <Card className="border-l-[3px] border-l-primary/60">
           <CardHeader>
             <CardTitle>Podaci o klijentu</CardTitle>
             <CardDescription>Osnovne informacije</CardDescription>
@@ -196,8 +202,9 @@ export default async function ClientDetailPage({
               Povijest mjeseci
             </p>
             {periods.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-border/90 bg-card py-8 text-center">
-                <p className="text-sm font-medium text-foreground/70">
+              <div className="rounded-xl border border-dashed border-border bg-card/60 py-10 text-center">
+                <FileText className="mx-auto size-6 text-muted-foreground/40" aria-hidden />
+                <p className="mt-2.5 text-sm font-medium text-foreground/70">
                   Još nema otvorenih mjeseci za ovog klijenta.
                 </p>
                 <p className="mt-1.5 text-sm text-muted-foreground">
@@ -218,7 +225,15 @@ export default async function ClientDetailPage({
                   </TableHeader>
                   <TableBody>
                     {periods.map((p) => (
-                      <TableRow key={p.id}>
+                      <TableRow
+                        key={p.id}
+                        className={cn(
+                          'border-l-2',
+                          p.status === 'ready'
+                            ? 'border-l-emerald-400'
+                            : 'border-l-amber-400',
+                        )}
+                      >
                         <TableCell className="font-medium">
                           {formatCroatianMonth(p.month, p.year)}
                         </TableCell>

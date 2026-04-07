@@ -21,6 +21,8 @@ const badgeVariants = cva(
           "border-blue-200/90 bg-blue-50 text-blue-950 [a]:hover:bg-blue-100/90",
         destructive:
           "border-red-200/90 bg-red-50 text-red-900 focus-visible:ring-red-200/50 [a]:hover:bg-red-100/90",
+        overdue:
+          "border-red-300/90 bg-red-100 text-red-900 font-semibold focus-visible:ring-red-200/50 [a]:hover:bg-red-200/90",
         outline:
           "border-border bg-card text-foreground [a]:hover:bg-muted",
         ghost:

@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { ReminderSettingsForm } from '@/components/reminder-settings-form';
+import { PageHeader } from '@/components/page-header';
 import type { ReminderSettings } from '@/types/db';
 
 export default async function ReminderSettingsPage() {
@@ -25,15 +26,11 @@ export default async function ReminderSettingsPage() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          Postavke podsjetnika
-        </h1>
-        <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          Predlošci e-pošte, potpis, prag zakašnjenja i pravila automatskih
-          podsjetnika. Promjene vrijede za sve buduće podsjetnike.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Konfiguracija"
+        title="Postavke podsjetnika"
+        subtitle="Predlošci e-pošte, potpis, prag zakašnjenja i pravila automatskih podsjetnika. Promjene vrijede za sve buduće podsjetnike."
+      />
       <ReminderSettingsForm settings={settings} />
     </div>
   );

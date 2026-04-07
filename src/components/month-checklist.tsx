@@ -179,7 +179,7 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
   return (
     <div className="space-y-5">
       {sorted.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-8 text-center shadow-sm">
+        <div className="rounded-xl border border-dashed border-border bg-card/60 py-10 text-center">
           <p className="text-sm font-medium text-foreground/70">
             Nema definiranih dokumenata za ovaj mjesec.
           </p>
@@ -276,10 +276,12 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
 
           <div className="space-y-2.5">
             {hasMissing && (
-              <p className="text-xs text-amber-900/90">
-                <span className="font-semibold tabular-nums">{missingCount}</span>{' '}
-                od {sorted.length} dokumenata još nedostaje.
-              </p>
+              <div className="rounded-md border border-amber-200/80 bg-amber-50/50 px-3 py-2">
+                <p className="text-xs font-medium text-amber-900">
+                  <span className="font-semibold tabular-nums">{missingCount}</span>{' '}
+                  od {sorted.length} dokumenata još nedostaje.
+                </p>
+              </div>
             )}
 
             {error && (
@@ -300,8 +302,13 @@ export function MonthChecklist({ monthlyPeriod, statuses, clientId, reminders }:
             )}
           </div>
 
-          <div className="rounded-xl border border-border/90 bg-slate-50/55 p-3.5 shadow-sm sm:p-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+          <div className={cn(
+            "rounded-xl border p-3.5 shadow-sm sm:p-4",
+            isReady
+              ? "border-emerald-200/60 bg-emerald-50/30"
+              : "border-border/90 bg-slate-50/55",
+          )}>
+            <p className="mb-2 text-sm font-semibold text-foreground">
               Radnje za ovaj mjesec
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:gap-4">

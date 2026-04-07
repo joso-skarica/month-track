@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { formatCroatianMonth } from '@/lib/utils/months';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/page-header';
 import { MonthChecklist } from '@/components/month-checklist';
 import { MonthPeriodNavigation } from '@/components/month-period-navigation';
 import type { Client, MonthlyPeriod } from '@/types/db';
@@ -51,50 +52,59 @@ export default async function MonthPage({
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl border border-border/90 bg-card p-4 shadow-sm sm:p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-                {monthLabel}
-              </h1>
-              {period.status === 'ready' ? (
+      <PageHeader
+        eyebrow={client.company_name}
+        title={
+          <span className="inline-flex flex-wrap items-center gap-3">
+            {monthLabel}
+            {period.status === 'ready' ? (
+              <>
                 <Badge variant="success">Spremno</Badge>
-              ) : (
-                <Badge variant="warning">Nepotpuno</Badge>
-              )}
-            </div>
-            <p className="mt-2 text-sm text-muted-foreground">
-              <span className="font-medium text-foreground/90">
-                {client.company_name}
-              </span>
-              <span className="text-border"> · </span>
-              OIB:{' '}
-              <span className="font-mono tabular-nums text-foreground/85">
-                {client.oib}
-              </span>
-            </p>
-          </div>
-          <div className="flex shrink-0 flex-wrap gap-2">
+                {period.ready_at && (
+                  <span className="text-xs font-normal tabular-nums text-muted-foreground">
+                    {new Date(period.ready_at).toLocaleDateString('hr-HR', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </span>
+                )}
+              </>
+            ) : (
+              <Badge variant="warning">Nepotpuno</Badge>
+            )}
+          </span>
+        }
+        subtitle={
+          <p>
+            OIB:{' '}
+            <span className="font-mono tabular-nums text-foreground/85">
+              {client.oib}
+            </span>
+          </p>
+        }
+        actions={
+          <>
             <Button asChild variant="outline" size="sm">
-              <Link
-                href={`/clients/${clientId}/months/${monthId}/summary`}
-              >
+              <Link href={`/clients/${clientId}/months/${monthId}/summary`}>
                 Ispis / sažetak mjeseca
               </Link>
             </Button>
             <Button asChild variant="outline" size="sm">
               <Link href={`/clients/${clientId}`}>Natrag na klijenta</Link>
             </Button>
-          </div>
-        </div>
-        <div className="mt-5 border-t border-border/80 pt-4">
-          <MonthPeriodNavigation
-            clientId={clientId}
-            year={period.year}
-            month={period.month}
-          />
-        </div>
+          </>
+        }
+      />
+
+      <div className="rounded-xl border border-border/90 bg-card px-5 py-4 shadow-sm sm:px-6">
+        <MonthPeriodNavigation
+          clientId={clientId}
+          year={period.year}
+          month={period.month}
+        />
       </div>
 
       <MonthChecklist

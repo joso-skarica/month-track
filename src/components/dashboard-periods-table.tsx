@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Mail } from 'lucide-react';
+import { CheckCircle2, Mail } from 'lucide-react';
 import { CLIENT_TYPES } from '@/lib/constants/client-presets';
 import { cn } from '@/lib/utils';
 import {
@@ -267,13 +267,16 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
       </div>
 
       {error ? (
-        <p className="text-sm text-destructive" role="alert">
+        <p
+          className="rounded-md border border-red-200/80 bg-red-50/75 px-3 py-2.5 text-sm font-medium text-red-800"
+          role="alert"
+        >
           {error}
         </p>
       ) : null}
       {feedback ? (
         <p
-          className="rounded-lg border border-border/80 bg-slate-50/80 px-3 py-2.5 text-sm text-foreground/90"
+          className="rounded-md border border-emerald-200/80 bg-emerald-50/75 px-3 py-2.5 text-sm font-medium text-emerald-800"
           role="status"
         >
           {feedback}
@@ -281,7 +284,7 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
       ) : null}
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border/90 bg-card/60 py-8 text-center shadow-sm">
+        <div className="rounded-xl border border-dashed border-border bg-card/60 py-10 text-center">
           {periods.length === 0 ? (
             <p className="text-sm font-medium text-foreground/70">Nema otvorenih mjeseci.</p>
           ) : (
@@ -378,20 +381,23 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
                     </TableCell>
                     <TableCell className="text-center tabular-nums">
                       {period.missingCount > 0 ? (
-                        <span className="font-semibold text-red-700">
+                        <span className="inline-block rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-800">
                           {period.missingCount}/{period.totalDocs}
                         </span>
                       ) : (
-                        <span className="text-muted-foreground">
+                        <span className="text-amber-700">
                           0/{period.totalDocs}
                         </span>
                       )}
                     </TableCell>
                     <TableCell>
                       {period.status === 'ready' ? (
-                        <Badge variant="success">Spremno</Badge>
+                        <span className="inline-flex items-center gap-1">
+                          <CheckCircle2 className="size-3.5 text-emerald-600" aria-hidden />
+                          <Badge variant="success">Spremno</Badge>
+                        </span>
                       ) : overdue ? (
-                        <Badge variant="destructive">Zakašnjelo</Badge>
+                        <Badge variant="overdue">Zakašnjelo</Badge>
                       ) : (
                         <Badge variant="warning">Nepotpuno</Badge>
                       )}
@@ -413,12 +419,11 @@ export function DashboardPeriodsTable({ periods, overdue }: Props) {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Link
-                        href={`/clients/${period.client_id}/months/${period.id}`}
-                        className="text-sm font-medium text-primary hover:underline"
-                      >
-                        Otvori
-                      </Link>
+                      <Button asChild variant="outline" size="sm">
+                        <Link href={`/clients/${period.client_id}/months/${period.id}`}>
+                          Otvori
+                        </Link>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
