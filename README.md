@@ -122,3 +122,10 @@ Static previews (paths relative to repository root).
 **Sažetak** — pregled mjeseca za ispis i internu provjeru
 
 ![Sažetak](public/screenshots/summary.png)
+
+## Copyright
+
+Copyright © 2026 Joso Skarica. All rights reserved.
+
+This repository is publicly visible for portfolio and evaluation purposes only.
+No license is granted to use, copy, modify, distribute, or commercially exploit the source code in this repository.
